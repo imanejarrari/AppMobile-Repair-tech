@@ -20,7 +20,7 @@ const HomeScreen = () => {
       userRef.get()
         .then(doc => {
           if (doc.exists) {
-            setUsername(doc.data().username);
+            setUsername(doc.data().firstName);
           } else {
             console.log('No such document!');
           }
@@ -52,7 +52,7 @@ const HomeScreen = () => {
             source={require('../profile.jpg')}
             style={styles.avatar}
           />
-          <Text>{username}</Text>
+          <Text>{firstName}</Text>
         </View>
         <View style={styles.headerRight}>
           <Ionicons 

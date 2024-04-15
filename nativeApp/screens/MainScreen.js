@@ -68,12 +68,3 @@ const MainScreen = () => {
 export default MainScreen;
 
 
-const styles = StyleSheet.create({
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 75,
-    marginTop: 110,
-    marginLeft:30
-  }
-})

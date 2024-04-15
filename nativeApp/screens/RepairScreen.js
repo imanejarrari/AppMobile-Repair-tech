@@ -7,9 +7,7 @@ const RepairScreen = () => {
 
    
     <View>
-      <SafeAreaView style={{flex:1}}> 
-        
-      </SafeAreaView>
+      <Text>ghtrhey</Text>
     </View>
   );
 }
