@@ -41,36 +41,24 @@ const MainScreen = () => {
         tabBarOptions={{
           activeTintColor: '#8B322C',
           inactiveTintColor: 'gray',
+
         }}
       >
         <Tab.Screen name={homeName} component={HomeScreen} 
         options={{
-          headerTitle:"",
-          headerStyle:{backgroundColor:"#8B322C" , height:"30%",borderBottomRightRadius:100 , borderBottomLeftRadius:100},
           headerShadowVisible:false,
-          headerLeft :()=>(
-            <Image 
-            source ={ require('../profile.jpg')}
-            style={styles.avatar}
-
-            
-            /> 
-            
- 
-          ),
-          headerRight:()=>(
-            <Ionicons 
-            name={'notifications-outline'}
-            size={30}
-            style={{marginRight:30 ,color:'white'}}
-            
-             />
-          )
+          headerShown: false,
         }}
         />
-        <Tab.Screen name={repairName} component={RepairScreen} />
-        <Tab.Screen name={ChatName} component={ChatScreen} />
-        <Tab.Screen name={settingsName} component={SettingsScreen} />
+        <Tab.Screen name={repairName}  component={RepairScreen} 
+                options={{
+                  headerShown: false ,
+                
+                }}
+                
+        />
+        <Tab.Screen name={ChatName} options={{ headerShown: false }} component={ChatScreen} />
+        <Tab.Screen name={settingsName} options={{ headerShown: false }} component={SettingsScreen} />
         
       </Tab.Navigator>
     

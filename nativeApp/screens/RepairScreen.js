@@ -1,10 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const RepairScreen = () => {
   return (
+
+   
     <View>
-      <Text>Repair Screen</Text>
+      <SafeAreaView style={{flex:1}}> 
+        
+      </SafeAreaView>
     </View>
   );
 }
