@@ -8,6 +8,7 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null); // Added state for error message
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -18,13 +19,11 @@ const Login = ({ navigation }) => {
       })
       .catch(error => {
         console.error('Login error:', error.message);
-        // Handle specific errors
-        if (error.code === 'auth/invalid-email') {
-          console.error('Invalid email format');
-          // Provide user feedback, e.g., display an error message
-        }
+        setErrorMessage(error.message); // Set error message state
       });
   };
+
+ 
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

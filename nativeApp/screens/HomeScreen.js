@@ -6,30 +6,50 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 const HomeScreen = () => {
-  const [username, setUsername] = useState('');
+  const [firstName, setUsername] = useState('');
   const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    // Fetch current user's username from Firestore or Realtime Database
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
+    // Fetch current user's data 
+    const fetchUserData = async () => {
+      const firebaseApp = firebase.app();
+      if (!firebaseApp) {
+        console.error("Firebase app is not initialized.");
+        return;
+      }
+  
+      const auth = firebase.auth(firebaseApp);
+      if (!auth) {
+        console.error("Firebase authentication is not initialized.");
+        return;
+      }
+  
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        console.error("No user is currently authenticated.");
+        return;
+      }
+  
       const uid = currentUser.uid;
-      const db = firebase.firestore();
+      const db = firebase.firestore(firebaseApp);
       const userRef = db.collection('users').doc(uid);
-
-      userRef.get()
-        .then(doc => {
-          if (doc.exists) {
-            setUsername(doc.data().firstName);
-          } else {
-            console.log('No such document!');
-          }
-        })
-        .catch(error => {
-          console.log('Error getting document:', error);
-        });
-    }
+  
+      try {
+        const doc = await userRef.get();
+        if (doc.exists) {
+      
+          setUsername(doc.data().firstName);
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.log('Error getting document:', error);
+      }
+    };
+  
+    fetchUserData();
   }, []);
+  
 
   // Function to fetch notification count
   const fetchNotificationCount = () => {
@@ -39,7 +59,6 @@ const HomeScreen = () => {
     setNotificationCount(5); // Example notification count
   };
 
-  // Call fetchNotificationCount on component mount to get the initial count
   useEffect(() => {
     fetchNotificationCount();
   }, []);
@@ -52,7 +71,7 @@ const HomeScreen = () => {
             source={require('../profile.jpg')}
             style={styles.avatar}
           />
-          <Text>{firstName}</Text>
+          <Text>Glad to see you !{'\n'}{firstName}</Text>
         </View>
         <View style={styles.headerRight}>
           <Ionicons 
@@ -76,9 +95,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#8B322C',
+    backgroundColor: 'rgba(139, 50, 44, 1)',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    height:150,
+    borderBottomLeftRadius:40,
+    borderBottomRightRadius:40,
   },
   headerLeft: {
     flexDirection: 'row',
