@@ -122,10 +122,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   image:{
-   marginTop:10,
-   width:235,
-   height: 75,
-   marginBottom:100,
+   marginTop:15,
+   width:200,
+   height: 55,
+   marginBottom:90,
 
   }
 });

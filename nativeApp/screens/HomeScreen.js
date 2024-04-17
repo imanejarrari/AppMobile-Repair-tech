@@ -5,6 +5,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
+
 const HomeScreen = () => {
   const [firstName, setUsername] = useState('');
   const [notificationCount, setNotificationCount] = useState(0);
@@ -71,7 +72,7 @@ const HomeScreen = () => {
             source={require('../profile.jpg')}
             style={styles.avatar}
           />
-          <Text>Glad to see you !{'\n'}{firstName}</Text>
+          <Text styel={styles.head}>Glad to see you !{'\n'}{firstName}</Text>
         </View>
         <View style={styles.headerRight}>
           <Ionicons 
@@ -99,8 +100,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     height:150,
-    borderBottomLeftRadius:40,
-    borderBottomRightRadius:40,
+  
   },
   headerLeft: {
     flexDirection: 'row',
