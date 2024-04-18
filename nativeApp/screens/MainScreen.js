@@ -8,6 +8,7 @@ import RepairScreen from './RepairScreen';
 import SettingsScreen from './settingsScreen';
 import ChatScreen from './chat';
 
+
 // Screen names
 const homeName = 'Home';
 const repairName = 'Repair';
@@ -59,6 +60,7 @@ const MainScreen = () => {
         />
         <Tab.Screen name={ChatName} options={{ headerShown: false }} component={ChatScreen} />
         <Tab.Screen name={settingsName} options={{ headerShown: false }} component={SettingsScreen} />
+       
         
       </Tab.Navigator>
     

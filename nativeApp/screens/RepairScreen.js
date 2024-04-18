@@ -5,7 +5,7 @@ import { query, collection, getDocs } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const RepairScreen = () => {
+const RepairScreen = ({ navigation }) => { 
   const [technicians, setTechnicians] = useState([]);
 
   useEffect(() => {
@@ -22,6 +22,11 @@ const RepairScreen = () => {
 
     fetchTechnicians();
   }, []);
+
+  // Function to handle navigation when "Go to Repair" button is pressed
+  const goToRepairForm = () => {
+    navigation.navigate('RepairForm');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -37,7 +42,7 @@ const RepairScreen = () => {
            </View>
             
             
-              <TouchableOpacity style={styles.button}>
+           <TouchableOpacity style={styles.button} onPress={goToRepairForm}>
                 <Text style={{fontSize:17,color:'white',fontWeight:'bold',marginTop:5}}>Go to Repair {'>>'}</Text>
               </TouchableOpacity>
 
