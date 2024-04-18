@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
@@ -8,22 +8,33 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null); // Added state for error message
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    // Set up authentication listener
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in, navigate to the main screen
+        navigation.replace('MainScreen');
+      }
+    });
+
+    // Clean up the listener when component unmounts
+    return unsubscribe;
+  }, []);
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
-        navigation.replace('MainScreen');
+        // No need to navigate here, onAuthStateChanged listener will handle it
       })
       .catch(error => {
         console.error('Login error:', error.message);
-        setErrorMessage(error.message); // Set error message state
+        setErrorMessage(error.message);
       });
   };
-
- 
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -37,7 +48,7 @@ const Login = ({ navigation }) => {
         placeholder="Email"
         placeholderTextColor="#A8A8A8"
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={text => setEmail(text)}
       />
       <View style={styles.passwordContainer}>
         <TextInput
@@ -46,7 +57,7 @@ const Login = ({ navigation }) => {
           secureTextEntry={!showPassword}
           placeholderTextColor="#A8A8A8"
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={text => setPassword(text)}
         />
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIconContainer}>
           <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={18} color="#A8A8A8" />
@@ -55,10 +66,13 @@ const Login = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+      {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
       <View>
         <Text style={{ color: 'black', fontSize: 15, marginTop: 15 }}>
           Don't have an account?{' '}
-          <Text onPress={() => navigation.navigate('signUp')} style={{ color: '#8B322C', fontSize: 18, marginTop: 40 }}>
+          <Text
+            onPress={() => navigation.navigate('SignUp')}
+            style={{ color: '#8B322C', fontSize: 18, marginTop: 40 }}>
             Sign Up
           </Text>
         </Text>
@@ -130,6 +144,10 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     fontSize: 18,
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: 10,
   },
 });
 

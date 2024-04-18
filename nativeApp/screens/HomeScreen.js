@@ -1,67 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-
+import { auth, db } from '../firebase/firebase'; // Assuming you have db initialized for Firestore
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const HomeScreen = () => {
-  const [firstName, setUsername] = useState('');
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserName, setCurrentUserName] = useState('No Name');
 
   useEffect(() => {
-    // Fetch current user's data 
-    const fetchUserData = async () => {
-      const firebaseApp = firebase.app();
-      if (!firebaseApp) {
-        console.error("Firebase app is not initialized.");
-        return;
-      }
-  
-      const auth = firebase.auth(firebaseApp);
-      if (!auth) {
-        console.error("Firebase authentication is not initialized.");
-        return;
-      }
-  
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        console.error("No user is currently authenticated.");
-        return;
-      }
-  
-      const uid = currentUser.uid;
-      const db = firebase.firestore(firebaseApp);
-      const userRef = db.collection('users').doc(uid);
-  
+    const fetchCurrentUser = async () => {
       try {
-        const doc = await userRef.get();
-        if (doc.exists) {
-      
-          setUsername(doc.data().firstName);
+        const user = auth.currentUser;
+        if (user) {
+          setCurrentUser(user);
+          const q = query(collection(db, "users"), where("uid", "==", user.uid));
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            setCurrentUserName(doc.data().firstName);
+          });
         } else {
-          console.log('No such document!');
+          setCurrentUser(null);
         }
       } catch (error) {
-        console.log('Error getting document:', error);
+        console.error('Error fetching current user:', error);
       }
     };
-  
-    fetchUserData();
-  }, []);
-  
 
-  // Function to fetch notification count
-  const fetchNotificationCount = () => {
-    // Implement logic to fetch notification count
-    // For example, you can query a collection in Firestore or get data from an API
-    // Once you have the count, update the state variable setNotificationCount
-    setNotificationCount(5); // Example notification count
-  };
-
-  useEffect(() => {
-    fetchNotificationCount();
+    fetchCurrentUser();
   }, []);
 
   return (
@@ -72,7 +38,10 @@ const HomeScreen = () => {
             source={require('../profile.jpg')}
             style={styles.avatar}
           />
-          <Text styel={styles.head}>Glad to see you !{'\n'}{firstName}</Text>
+          <Text style={styles.head}>
+            Glad to see you !{'\n'}
+            {currentUserName}
+          </Text>
         </View>
         <View style={styles.headerRight}>
           <Ionicons 
@@ -80,7 +49,6 @@ const HomeScreen = () => {
             size={30}
             color={'white'}
           />
-          <Text style={styles.notificationCount}>{notificationCount}</Text> 
         </View>
       </View>
     </View>
@@ -99,8 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(139, 50, 44, 1)',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    height:150,
-  
+    height: 150,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -116,12 +83,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 10,
   },
-  notificationCount: {
-    backgroundColor: 'red',
+  head: {
     color: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    marginLeft: 5,
+    fontSize: 18,
   },
 });
 

@@ -1,8 +1,6 @@
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import 'firebase/compat/storage'
-import firebase from 'firebase/compat/app'
 
 
 
@@ -15,13 +13,11 @@ const firebaseConfig = {
   messagingSenderId: "594286615060",
   appId: "1:594286615060:web:7999563cba3c1ef1632501"
 };
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig)
-}
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth =getAuth(app);
+
+// Get the Auth and Firestore instances
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-
-export  {app,auth,db};
+export { app, auth, db };
