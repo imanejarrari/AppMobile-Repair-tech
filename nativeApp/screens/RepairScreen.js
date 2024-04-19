@@ -45,6 +45,19 @@ const RepairScreen = ({ navigation }) => {
   const goToRepairForm = () => {
     navigation.navigate('RepairForm');
   };
+  //status colors
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'completed':
+        return { color: 'black' , borderWidth:1,borderColor:"green",backgroundColor:"green",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 }
+      case 'pending':
+        return { color: 'black' , borderWidth:1,borderColor:"yellow",backgroundColor:"yellow",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 };
+      case 'in progress':
+        return { color: 'black' , borderWidth:1,borderColor:"orange",backgroundColor:"orange",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 }
+      default:
+        return {}; 
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,20 +91,16 @@ const RepairScreen = ({ navigation }) => {
          {latestRepair && latestRepair.map(repairs => (
              <View key={repairs.id} style={styles.request}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+             
               
-              <Text style={{}}>
-                <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Device:</Text> {repairs.device}
-                </Text>
+                <Text style={{color:'black' , fontSize:16 , fontWeight:'bold',marginLeft:40}}>{repairs.device}</Text> 
+               
               </View>
                
-               <Text>
-               <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Repair Type:</Text>
-                 {repairs.repairType}
+               <Text style={{marginTop:10,fontSize:12}}>
+                 {repairs.description}
                  </Text>
-               <Text>
-               <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Status:</Text>
-                 {repairs.status}
-                 </Text>
+                 <Text style={[styles.status, getStatusStyle(repairs.status)]}>{repairs.status}</Text>
               
              </View>
            ))}
@@ -173,19 +182,16 @@ const styles = StyleSheet.create({
     paddingRight: 20, // Add padding to the right side of the card container
   },
   request: {
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 150,
     marginHorizontal: 10, // Add horizontal margin to create space between cards
-    borderWidth:0.1,
+    borderWidth:0,
     backgroundColor: 'white ',
-    elevation: 3,
+    elevation: 2,
     shadowColor:'#5BBCFF',
     shadowOpacity: 1,
     shadowRadius: 1,
-    shadowOffset: {
-      width: 0,   // No horizontal shadow offset
-      height: 4,  // Vertical shadow offset to apply shadow at the top and bottom
-    },
+    borderRadius:1,
     padding:20
   },
   technicianContainer: {
@@ -227,5 +233,6 @@ const styles = StyleSheet.create({
 
 
 
-  }
+  },
+  
 });

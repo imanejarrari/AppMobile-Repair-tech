@@ -43,7 +43,7 @@ const RepairForm = ({ navigation }) => {
   };
   const closeModal = () => {
     setIsModalVisible(false);
-    navigation.replace('RepairScreen');
+    navigation.goBack();
   };
 
   return (
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  modalContainer: {
+  modalContainer: { 
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
