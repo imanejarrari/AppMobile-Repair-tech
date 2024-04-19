@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { query, collection, getDocs } from "firebase/firestore";
+import { query, collection, getDocs,orderBy,limit } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const RepairScreen = ({ navigation }) => { 
   const [technicians, setTechnicians] = useState([]);
+  const [latestRepair, setLatestRepair] = useState([]);
 
   useEffect(() => {
     const fetchTechnicians = async () => {
@@ -21,6 +22,23 @@ const RepairScreen = ({ navigation }) => {
     };
 
     fetchTechnicians();
+
+    const fetchLatestRepair = async () => {
+      try {
+        const q = query(collection(db, "RepairRequest"));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const latestRepairData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setLatestRepair(latestRepairData);
+        } else {
+          setLatestRepair(null);
+        }
+      } catch (error) {
+        console.error('Error fetching latest repair request:', error);
+      }
+    };
+
+    fetchLatestRepair();
   }, []);
 
   // Function to handle navigation when "Go to Repair" button is pressed
@@ -53,20 +71,31 @@ const RepairScreen = ({ navigation }) => {
         <Text style={styles.repair1}>See All</Text>
      </View>
     
-       
-
-
 
         <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
          
          <View style={styles.cardContainer}>
-           <View style={styles.request}>
-             <Text>Device : iphone 11</Text>
-             <Text>RepairType: Screen replacement </Text>
-             <Text>Stauts : pending</Text>
-           </View>
-           <View style={styles.request}></View>
-           <View style={styles.request}></View>
+         {latestRepair && latestRepair.map(repairs => (
+             <View key={repairs.id} style={styles.request}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              
+              <Text style={{}}>
+                <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Device:</Text> {repairs.device}
+                </Text>
+              </View>
+               
+               <Text>
+               <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Repair Type:</Text>
+                 {repairs.repairType}
+                 </Text>
+               <Text>
+               <Text style={{color:'blue' , fontSize:13 , fontWeight:'bold'}}>Status:</Text>
+                 {repairs.status}
+                 </Text>
+              
+             </View>
+           ))}
+           
            
          </View>
          
@@ -145,17 +174,17 @@ const styles = StyleSheet.create({
   },
   request: {
     width: 250,
-    height: 100,
+    height: 250,
     marginHorizontal: 10, // Add horizontal margin to create space between cards
-    borderWidth:0.10,
+    borderWidth:0.1,
     backgroundColor: 'white ',
-    elevation: 2,
-    shadowColor:'grey',
+    elevation: 3,
+    shadowColor:'#5BBCFF',
     shadowOpacity: 1,
     shadowRadius: 1,
     shadowOffset: {
       width: 0,   // No horizontal shadow offset
-      height: 2,  // Vertical shadow offset to apply shadow at the top and bottom
+      height: 4,  // Vertical shadow offset to apply shadow at the top and bottom
     },
     padding:20
   },
