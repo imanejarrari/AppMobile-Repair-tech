@@ -42,7 +42,6 @@ const SignUp = ({ navigation }) => {
     }}
     >
       
-         <Image source={require('../bestTech.jpg')} style={styles.image} />
      
   
       <TextInput
@@ -120,13 +119,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
-  },
-  image:{
-   marginTop:15,
-   width:200,
-   height: 55,
-   marginBottom:90,
-
   }
 });
 

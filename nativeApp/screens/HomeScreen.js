@@ -7,28 +7,38 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 const HomeScreen = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserName, setCurrentUserName] = useState('No Name');
-
+  
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const user = auth.currentUser;
         if (user) {
           setCurrentUser(user);
-          const q = query(collection(db, "users"), where("uid", "==", user.uid));
-          const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            setCurrentUserName(doc.data().firstName);
-          });
+          // Check if email is defined
+          if (user.email) {
+            const q = query(collection(db, "users"), where("email", "==", user.email));
+            const querySnapshot = await getDocs(q);
+            console.log("Query results:", querySnapshot.docs);
+            querySnapshot.forEach((doc) => {
+              setCurrentUserName(doc.data().firstName);
+            });
+          } else {
+            setCurrentUserName('No Name');
+          }
         } else {
           setCurrentUser(null);
         }
       } catch (error) {
         console.error('Error fetching current user:', error);
+        // Handle error: set current user to null and display default name
+        setCurrentUser(null);
+        setCurrentUserName('No Name');
       }
     };
-
     fetchCurrentUser();
   }, []);
+  
+  
 
   return (
     <View style={styles.container}>
@@ -64,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(139, 50, 44, 1)',
+    backgroundColor: '#5BBCFF',
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 150,
