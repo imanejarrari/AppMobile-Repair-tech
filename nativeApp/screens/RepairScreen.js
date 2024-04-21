@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView ,Image} from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { query, collection, getDocs,orderBy,limit } from "firebase/firestore";
 import { db } from '../firebase/firebase';
@@ -58,6 +58,17 @@ const RepairScreen = ({ navigation }) => {
         return {}; 
     }
   };
+   // Function to handle navigation when "Send Message" icon is pressed
+   const handleSendMessage = () => {
+    // Navigate to ChatScreen
+    navigation.navigate('ChatScreen');
+  };
+
+  // Function to handle navigation when "Schedule Meeting" icon is pressed
+  const handleScheduleMeeting = () => {
+    // Navigate to MeetingFormScreen
+    navigation.navigate('MeetingFormScreen');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -115,10 +126,23 @@ const RepairScreen = ({ navigation }) => {
          <View style={styles.cardContainer}>
            {technicians.map(technician => (
              <View key={technician.id} style={styles.requestTech}>
-               <Text>Name: {technician.Name}</Text>
-               <Text>Specialization: {technician.Specialization}</Text>
-               <Text>Availability: {technician.Availability}</Text>
-               <Text>Rating: {technician.Rating}</Text>
+             <Image 
+            source={require('../profile.jpg')}
+            style={styles.avatar}
+          />
+               <Text style={{fontWeight:'bold',marginLeft:60,marginTop:5,fontSize:15}}>{technician.Name}</Text>
+               <Text style={{marginLeft:50,marginTop:3}}>{technician.Specialization}</Text>
+               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+               <TouchableOpacity onPress={handleSendMessage}>
+                    <Ionicons name="chatbox-outline" size={24} color="green" style={{marginLeft: 60 ,marginTop:10}} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleScheduleMeeting}>
+                    <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
+                  </TouchableOpacity>
+               </View>
+                 
+
+               
              </View>
            ))}
          </View>
@@ -198,14 +222,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 150,
     marginHorizontal: 10, 
-    borderWidth:0,
+    borderWidth:0.1,
+    borderColor:'grey',
     backgroundColor: 'white ',
-    elevation: 2,
-    shadowColor:'#5BBCFF',
-    shadowOpacity: 1,
     shadowRadius: 1,
-    borderRadius:1,
-    padding:20
+    borderRadius:10,
+    padding:10
   },
   technicianContainer: {    
     marginTop: 20,
@@ -243,9 +265,12 @@ const styles = StyleSheet.create({
     borderRadius:10,
     borderColor:'#8B322C',
     backgroundColor:'#8B322C',
-
-
-
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 15,
+    marginLeft:70,
   },
   
 });

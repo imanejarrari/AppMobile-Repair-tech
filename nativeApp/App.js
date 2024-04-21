@@ -4,7 +4,8 @@ import MainScreen from './screens/MainScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RepairForm from './screens/RepairForm';
-
+import MeetingFormScreen from './screens/MeetingFormScreen';
+import ChatScreen from './screens/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,8 @@ const App = () => {
           <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} /> 
           <Stack.Screen name="RepairForm" component={RepairForm} options={{ headerShown: false }} />
+          <Stack.Screen name="MeetingFormScreen" component={MeetingFormScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
          
         </NavigationContainer>

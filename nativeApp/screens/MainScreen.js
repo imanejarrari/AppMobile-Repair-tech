@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './HomeScreen';
 import RepairScreen from './RepairScreen';
 import SettingsScreen from './settingsScreen';
-import ChatScreen from './chat';
+import ChatScreen from './ChatScreen';
 
 
 // Screen names
