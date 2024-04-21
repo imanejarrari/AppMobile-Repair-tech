@@ -40,7 +40,7 @@ const MainScreen = () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: '#5BBCFF',
+          activeTintColor: '#8B322C',
           inactiveTintColor: 'gray',
 
         }}

@@ -39,7 +39,7 @@ const SignUp = ({ navigation }) => {
     >
       <View  style={styles.header} >
       <Image
-        source={require('../bestTech.jpg')}
+        source={require('../saruu.png')}
         style={styles.backgroundImage}
       />
       </View>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor:'#ffff'
+    backgroundColor:'#fff'
   },
  
   input: {
@@ -105,32 +105,37 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius:13,
     color: '#000',
+    backgroundColor:'#fff'
   },
   button: {
-    backgroundColor: '#5BBCFF',
+    backgroundColor: '#8B322C',
     borderRadius:13,
     padding: 10,
     alignItems: 'center',
     borderRadius: 30,
-    paddingLeft: 90,
-    paddingRight: 90,
-    width:300
+    paddingLeft: 10,
+    width:200
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
   },
   header:{
-    backgroundColor: 'white',
+    backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 180,
     width:400,
     marginBottom: 100,
-    borderWidth:10,
-    borderColor:"#5BBCFF"
+    borderBottomLeftRadius:250,
+    borderBottomRightRadius:250
 
-
+  },
+  backgroundImage:{
+    marginTop:60,
+    marginLeft:100,
+    width:150,
+    height:50
   }
 
 });

@@ -71,7 +71,7 @@ const Login = ({ navigation }) => {
         <Text style={{ color: 'black', fontSize: 15, marginTop: 15 }}>
           Don't have an account?{' '}
           <Text
-            onPress={() => navigation.navigate('SignUp')}
+            onPress={() => navigation.navigate('signUp')}
             style={{ color: '#8B322C', fontSize: 18, marginTop: 40 }}>
             Sign Up
           </Text>

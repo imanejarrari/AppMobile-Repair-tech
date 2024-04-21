@@ -66,10 +66,10 @@ const RepairScreen = ({ navigation }) => {
       <View style={styles.contentContainer}>
          <ScrollView >
           <View style={styles.RepairAnn}>
-            <Text style={{fontWeight:'bold',fontSize:15 ,color:'black'}}>Tech Repair</Text>
+            <Text style={{fontWeight:'bold',fontSize:15 ,color:'grey'}}>Tech Repair</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                  <Text style={{ fontSize:11, letterSpacing:0.1 }}>Your Partner For Your Acquisitions Of Computer {'\n'} Equipment, Office Automation, Accessories, {'\n'} Consumables And Stationery.  </Text>
-                    <Ionicons name="construct-outline" size={60} color="blue" style={{ marginLeft: 10 }} />
+                    <Ionicons name="construct-outline" size={60} color="black" style={{ marginLeft: 10 }} />
            </View>
             
             
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    backgroundColor: '#5BBCFF',
+    backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 100,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   repair: {
     fontSize: 14,
     fontWeight: 'bold',
-    color:'black'
+    color:'grey'
   },
   repair1: {
     fontSize: 10,
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     paddingHorizontal: 20,
+    color:'grey'
   },
   RepairAnn:{
     marginLeft:5,
@@ -228,8 +229,8 @@ const styles = StyleSheet.create({
     height:35,
     paddingLeft:5,
     borderRadius:10,
-    borderColor:'#5BBCFF',
-    backgroundColor:'#5BBCFF',
+    borderColor:'#8B322C',
+    backgroundColor:'#8B322C',
 
 
 
