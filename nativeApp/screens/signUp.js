@@ -36,12 +36,13 @@ const SignUp = ({ navigation }) => {
   return (
    
     <View style={styles.container}
-    options={{
-      headerTitle:"",
-      headerStyle:{backgroundColor:"#8B322C" , height:"30%",borderBottomRightRadius:50 , borderBottomLeftRadius:50}
-    }}
     >
-      
+      <View  style={styles.header} >
+      <Image
+        source={require('../bestTech.jpg')}
+        style={styles.backgroundImage}
+      />
+      </View>
      
   
       <TextInput
@@ -91,7 +92,6 @@ const SignUp = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor:'#ffff'
   },
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   button: {
-    backgroundColor: '#8B322C',
+    backgroundColor: '#5BBCFF',
     borderRadius:13,
     padding: 10,
     alignItems: 'center',
@@ -119,7 +119,20 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
+  },
+  header:{
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    height: 180,
+    width:400,
+    marginBottom: 100,
+    borderWidth:10,
+    borderColor:"#5BBCFF"
+
+
   }
+
 });
 
 export default SignUp;
