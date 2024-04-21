@@ -49,20 +49,21 @@ const RepairScreen = ({ navigation }) => {
   const getStatusStyle = (status) => {
     switch (status) {
       case 'completed':
-        return { color: 'black' , borderWidth:1,borderColor:"green",backgroundColor:"green",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 }
+        return { color: 'black' , borderWidth:1,borderColor:"green",backgroundColor:"green",width:100,paddingLeft:15,borderRadius:30,marginTop:15,marginLeft:25 }
       case 'pending':
         return { color: 'black' , borderWidth:1,borderColor:"yellow",backgroundColor:"yellow",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 };
       case 'in progress':
-        return { color: 'black' , borderWidth:1,borderColor:"orange",backgroundColor:"orange",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 }
+        return { color: 'black' , borderWidth:1,borderColor:"orange",backgroundColor:"orange",width:100,paddingLeft:16,borderRadius:30,marginTop:15,marginLeft:25 }
       default:
         return {}; 
     }
   };
    // Function to handle navigation when "Send Message" icon is pressed
-   const handleSendMessage = () => {
-    // Navigate to ChatScreen
-    navigation.navigate('ChatScreen');
+   const handleSendMessage = (technicianId) => {
+    // Navigate to ChatScreen and pass the technicianId as a parameter
+    navigation.navigate('ChatScreen', { technicianId });
   };
+  
 
   // Function to handle navigation when "Schedule Meeting" icon is pressed
   const handleScheduleMeeting = () => {
@@ -77,7 +78,7 @@ const RepairScreen = ({ navigation }) => {
       <View style={styles.contentContainer}>
          <ScrollView >
           <View style={styles.RepairAnn}>
-            <Text style={{fontWeight:'bold',fontSize:15 ,color:'grey'}}>Tech Repair</Text>
+            <Text style={{fontWeight:'bold',fontSize:15 ,color:'#8B322C'}}>Tech Repair</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                  <Text style={{ fontSize:11, letterSpacing:0.1 }}>Your Partner For Your Acquisitions Of Computer {'\n'} Equipment, Office Automation, Accessories, {'\n'} Consumables And Stationery.  </Text>
                     <Ionicons name="construct-outline" size={60} color="black" style={{ marginLeft: 10 }} />
@@ -85,7 +86,7 @@ const RepairScreen = ({ navigation }) => {
             
             
            <TouchableOpacity style={styles.button} onPress={goToRepairForm}>
-                <Text style={{fontSize:17,color:'white',fontWeight:'bold',marginTop:5}}>Go to Repair {'>>'}</Text>
+                <Text style={{fontSize:16,color:'white',fontWeight:'bold',marginTop:5}}>Go to Repair {'>>'}</Text>
               </TouchableOpacity>
 
           </View>
@@ -126,23 +127,21 @@ const RepairScreen = ({ navigation }) => {
          <View style={styles.cardContainer}>
            {technicians.map(technician => (
              <View key={technician.id} style={styles.requestTech}>
-             <Image 
-            source={require('../picture.png')}
-            style={styles.avatar}
-          />
+                <Image 
+                   source={require('../picture.png')}
+                    style={styles.avatar}
+                 />
                <Text style={{fontWeight:'bold',marginLeft:25,marginTop:5,fontSize:15}}>{technician.Name}</Text>
                <Text style={{marginLeft:20,marginTop:3 ,fontSize:13}}>{technician.Specialization}</Text>
                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-               <TouchableOpacity onPress={handleSendMessage}>
-                    <Ionicons name="chatbox-outline" size={24} color="green" style={{marginLeft: 30 ,marginTop:10}} />
-                  </TouchableOpacity>
+               <TouchableOpacity onPress={() => handleSendMessage(technician.id)}>
+                  <Ionicons name="chatbox-outline" size={24} color="green" style={{ marginLeft: 30 ,marginTop:10}} />
+               </TouchableOpacity>
+
                   <TouchableOpacity onPress={handleScheduleMeeting}>
                     <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
                   </TouchableOpacity>
                </View>
-                 
-
-               
              </View>
            ))}
          </View>
@@ -191,9 +190,9 @@ const styles = StyleSheet.create({
     marginBottom:10
   },
   repair: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
-    color:'grey'
+    color:'#8B322C'
   },
   repair1: {
     fontSize: 10,
@@ -203,12 +202,13 @@ const styles = StyleSheet.create({
 
   cardContainer: {
     flexDirection: 'row',
-    paddingRight: 20, // Add padding to the right side of the card container
+    paddingRight: 20, 
+    
   },
   request: {
     width: 200,
     height: 150,
-    marginHorizontal: 10, // Add horizontal margin to create space between cards
+    marginHorizontal: 10, 
     borderWidth:0,
     backgroundColor: 'white ',
     elevation: 2,
@@ -222,24 +222,25 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginHorizontal: 10, 
-    borderWidth:0.1,
-    borderColor:'grey',
-    shadowRadius: 5,
-    //borderRadius:5,
+    borderWidth:0,
+    elevation: 2,
+    shadowColor:'#5BBCFF',
+    shadowOpacity: 2,
+    shadowRadius: 1,
     padding:10,
     backgroundColor:'whitesmoke',
-    shadowColor:'#5BBCFF'
+    
 
   },
   technicianContainer: {    
     marginTop: 20,
   },
   technicianTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 10,
     paddingHorizontal: 20,
-    color:'grey'
+    color:'#8B322C'
   },
   RepairAnn:{
     marginLeft:5,
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
   },
   button:{
     borderWidth:1,
-    width:130,
+    width:120,
     height:35,
     paddingLeft:5,
     borderRadius:10,

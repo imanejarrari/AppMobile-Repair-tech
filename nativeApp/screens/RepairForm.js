@@ -53,7 +53,7 @@ const RepairForm = ({ navigation }) => {
       </View>
       <View style={styles.formContainer}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="person-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="person-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Client Name"
@@ -62,7 +62,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="mail-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="mail-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -72,7 +72,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="location-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="location-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Address"
@@ -81,7 +81,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="hardware-chip-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="hardware-chip-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Device"
@@ -90,7 +90,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="build-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="build-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Repair Type"
@@ -99,7 +99,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="document-text-outline" size={24} color="blue" style={styles.icon} />
+          <Ionicons name="document-text-outline" size={24} color="grey" style={styles.icon} />
           <TextInput
             style={[styles.input, { height: 100 }]}
             placeholder="Description"
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    backgroundColor: '#5BBCFF',
+    backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 180,
@@ -173,17 +173,18 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 50,
     alignItems: 'center',
-    width: 150,
+    width: 100,
     marginLeft: 20,
     marginBottom: 20,
   },
   backButton: {
-    backgroundColor: '#5BBCFF',
+    backgroundColor: 'grey',
     padding: 15,
     borderRadius: 50,
     alignItems: 'center',
-    width: 150,
+    width: 100,
     marginBottom: 20,
+    marginLeft:60
   },
   submitButtonText: {
     color: 'white',
