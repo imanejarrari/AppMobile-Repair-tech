@@ -114,7 +114,7 @@ const RepairScreen = ({ navigation }) => {
          <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
          <View style={styles.cardContainer}>
            {technicians.map(technician => (
-             <View key={technician.id} style={styles.request}>
+             <View key={technician.id} style={styles.requestTech}>
                <Text>Name: {technician.Name}</Text>
                <Text>Specialization: {technician.Specialization}</Text>
                <Text>Availability: {technician.Availability}</Text>
@@ -194,8 +194,20 @@ const styles = StyleSheet.create({
     borderRadius:1,
     padding:20
   },
-  technicianContainer: {
-    
+  requestTech:{
+    width: 200,
+    height: 150,
+    marginHorizontal: 10, 
+    borderWidth:0,
+    backgroundColor: 'white ',
+    elevation: 2,
+    shadowColor:'#5BBCFF',
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    borderRadius:1,
+    padding:20
+  },
+  technicianContainer: {    
     marginTop: 20,
   },
   technicianTitle: {
@@ -217,8 +229,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
     shadowOffset: {
-      width: 0,   // No horizontal shadow offset
-      height: 2,  // Vertical shadow offset to apply shadow at the top and bottom
+      width: 0,   
+      height: 2, 
     },
     padding:20
   
