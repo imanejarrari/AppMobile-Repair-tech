@@ -127,14 +127,14 @@ const RepairScreen = ({ navigation }) => {
            {technicians.map(technician => (
              <View key={technician.id} style={styles.requestTech}>
              <Image 
-            source={require('../profile.jpg')}
+            source={require('../picture.png')}
             style={styles.avatar}
           />
-               <Text style={{fontWeight:'bold',marginLeft:60,marginTop:5,fontSize:15}}>{technician.Name}</Text>
-               <Text style={{marginLeft:50,marginTop:3}}>{technician.Specialization}</Text>
+               <Text style={{fontWeight:'bold',marginLeft:25,marginTop:5,fontSize:15}}>{technician.Name}</Text>
+               <Text style={{marginLeft:20,marginTop:3 ,fontSize:13}}>{technician.Specialization}</Text>
                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                <TouchableOpacity onPress={handleSendMessage}>
-                    <Ionicons name="chatbox-outline" size={24} color="green" style={{marginLeft: 60 ,marginTop:10}} />
+                    <Ionicons name="chatbox-outline" size={24} color="green" style={{marginLeft: 30 ,marginTop:10}} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleScheduleMeeting}>
                     <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
@@ -219,15 +219,17 @@ const styles = StyleSheet.create({
     padding:20
   },
   requestTech:{
-    width: 200,
+    width: 150,
     height: 150,
     marginHorizontal: 10, 
     borderWidth:0.1,
     borderColor:'grey',
-    backgroundColor: 'white ',
-    shadowRadius: 1,
-    borderRadius:10,
-    padding:10
+    shadowRadius: 5,
+    //borderRadius:5,
+    padding:10,
+    backgroundColor:'whitesmoke',
+    shadowColor:'#5BBCFF'
+
   },
   technicianContainer: {    
     marginTop: 20,
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 15,
-    marginLeft:70,
+    marginLeft:44,
   },
   
 });
