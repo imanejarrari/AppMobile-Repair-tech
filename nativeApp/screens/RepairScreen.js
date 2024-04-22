@@ -66,10 +66,10 @@ const RepairScreen = ({ navigation }) => {
   
 
   // Function to handle navigation when "Schedule Meeting" icon is pressed
-  const handleScheduleMeeting = () => {
-    // Navigate to MeetingFormScreen
-    navigation.navigate('MeetingFormScreen');
+  const handleScheduleMeeting = (technicianId) => {
+    navigation.navigate('MeetingFormScreen', { technicianId });
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -137,10 +137,10 @@ const RepairScreen = ({ navigation }) => {
                <TouchableOpacity onPress={() => handleSendMessage(technician.id)}>
                   <Ionicons name="chatbox-outline" size={24} color="green" style={{ marginLeft: 30 ,marginTop:10}} />
                </TouchableOpacity>
+               <TouchableOpacity onPress={() => handleScheduleMeeting(technician.id)}>
+                  <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
+              </TouchableOpacity>
 
-                  <TouchableOpacity onPress={handleScheduleMeeting}>
-                    <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
-                  </TouchableOpacity>
                </View>
              </View>
            ))}

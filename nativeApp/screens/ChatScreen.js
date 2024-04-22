@@ -5,35 +5,45 @@ import { db } from '../firebase/firebase';
 import { FontAwesome } from '@expo/vector-icons'; // Import the icon from the library
 
 const ChatScreen = ({ route }) => {
-  const { technicianId } = route.params;
+  const [technicianId, setTechnicianId] = useState(null); // Initialize technicianId as null
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [technicianName, setTechnicianName] = useState('');
 
   useEffect(() => {
-    const fetchTechnicianName = async () => {
-      try {
-        const technicianDoc = doc(db, 'Technicians', technicianId);
-        const technicianData = await getDoc(technicianDoc);
-        if (technicianData.exists()) {
-          setTechnicianName(technicianData.data().Name);
-        } else {
-          console.error('Technician not found');
+    if (route && route.params && route.params.technicianId) {
+      setTechnicianId(route.params.technicianId); // Set technicianId if it exists in route.params
+    } else {
+      console.error('Technician ID is missing');
+    }
+  }, [route]);
+
+  useEffect(() => {
+    if (technicianId) {
+      const fetchTechnicianName = async () => {
+        try {
+          const technicianDoc = doc(db, 'Technicians', technicianId);
+          const technicianData = await getDoc(technicianDoc);
+          if (technicianData.exists()) {
+            setTechnicianName(technicianData.data().Name);
+          } else {
+            console.error('Technician not found');
+          }
+        } catch (error) {
+          console.error('Error fetching technician:', error);
         }
-      } catch (error) {
-        console.error('Error fetching technician:', error);
-      }
-    };
+      };
 
-    fetchTechnicianName();
+      fetchTechnicianName();
 
-    const unsubscribe = onSnapshot(query(collection(db, 'chats')), (snapshot) => {
-      const messagesData = snapshot.docs.map(doc => doc.data());
-      const technicianMessages = messagesData.filter(message => message.receiverId === technicianId);
-      setMessages(technicianMessages);
-    });
+      const unsubscribe = onSnapshot(query(collection(db, 'chats')), (snapshot) => {
+        const messagesData = snapshot.docs.map(doc => doc.data());
+        const technicianMessages = messagesData.filter(message => message.receiverId === technicianId);
+        setMessages(technicianMessages);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, [technicianId]);
 
   const sendMessage = async () => {
@@ -58,8 +68,11 @@ const ChatScreen = ({ route }) => {
         <Image source={require('../picture.png')} style={styles.profileImage} />
         <Text style={styles.username}>{technicianName}</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.messagesContainer}>
-        {messages.map((message, index) => (
+      <ScrollView
+        contentContainerStyle={styles.messagesContainer}
+        inverted // Reverse the scroll view to display latest messages at the bottom
+      >
+        {messages.slice().reverse().map((message, index) => (
           <View key={index} style={styles.messageContainer}>
             <View style={styles.messageBubble}>
               <Text style={styles.messageText}>{message.text}</Text>
@@ -118,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B322C',
     borderRadius: 10,
     padding: 10,
-    marginRight:10
+    marginRight: 10,
   },
   messageText: {
     color: 'black',
