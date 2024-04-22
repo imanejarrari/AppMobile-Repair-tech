@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { collection, addDoc, query, orderBy, limit, onSnapshot, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { FontAwesome } from '@expo/vector-icons'; // Import the icon from the library
 
@@ -11,7 +11,6 @@ const ChatScreen = ({ route }) => {
   const [technicianName, setTechnicianName] = useState('');
 
   useEffect(() => {
-    // Fetch technician's name based on technicianId
     const fetchTechnicianName = async () => {
       try {
         const technicianDoc = doc(db, 'Technicians', technicianId);
@@ -28,18 +27,14 @@ const ChatScreen = ({ route }) => {
 
     fetchTechnicianName();
 
-    // Subscribe to chat messages
-    const unsubscribe = onSnapshot(query(collection(db, 'chats'), orderBy('createdAt'), limit(100)), (snapshot) => {
+    const unsubscribe = onSnapshot(query(collection(db, 'chats')), (snapshot) => {
       const messagesData = snapshot.docs.map(doc => doc.data());
-      setMessages(messagesData);
+      const technicianMessages = messagesData.filter(message => message.receiverId === technicianId);
+      setMessages(technicianMessages);
     });
 
     return () => unsubscribe();
-  }, []);
-
-  const isUserMessage = (message) => {
-    return message.technicianId === technicianId;
-  };
+  }, [technicianId]);
 
   const sendMessage = async () => {
     if (text.trim() === '') return;
@@ -57,9 +52,6 @@ const ChatScreen = ({ route }) => {
     }
   };
 
-  const technicianMessages = messages.filter(message => message.senderId === technicianId);
-  const userMessages = messages.filter(message => message.senderId === 'user');
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -67,15 +59,8 @@ const ChatScreen = ({ route }) => {
         <Text style={styles.username}>{technicianName}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.messagesContainer}>
-        {technicianMessages.map((message, index) => (
-          <View key={index} style={styles.technicianMessageContainer}>
-            <View style={styles.messageBubble}>
-              <Text style={styles.messageText}>{message.text}</Text>
-            </View>
-          </View>
-        ))}
-        {userMessages.map((message, index) => (
-          <View key={index} style={styles.userMessageContainer}>
+        {messages.map((message, index) => (
+          <View key={index} style={styles.messageContainer}>
             <View style={styles.messageBubble}>
               <Text style={styles.messageText}>{message.text}</Text>
             </View>
@@ -93,7 +78,6 @@ const ChatScreen = ({ route }) => {
           <FontAwesome name="send" size={24} color="black" style={styles.sendIcon} />
         </TouchableOpacity>
       </View>
-      {/* Use FontAwesome icon */}
     </View>
   );
 };
@@ -126,12 +110,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 10,
   },
-  technicianMessageContainer: {
+  messageContainer: {
     alignSelf: 'flex-start',
-    marginBottom: 10,
-  },
-  userMessageContainer: {
-    alignSelf: 'flex-end',
     marginBottom: 10,
   },
   messageBubble: {
