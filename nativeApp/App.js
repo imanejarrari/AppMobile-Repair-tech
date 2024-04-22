@@ -7,6 +7,7 @@ import RepairForm from './screens/RepairForm';
 import MeetingFormScreen from './screens/MeetingFormScreen';
 import ChatScreen from './screens/ChatScreen';
 import { View ,Text} from 'react-native';
+import HomeScreen from './screens/HomeScreen';
 
 
 const Stack = createStackNavigator();
@@ -18,6 +19,7 @@ const App = () => {
           <Stack.Navigator initialRouteName='firstScreen'>
           <Stack.Screen name="signUp" component={SignUp} options={{ headerShown: false }} />
           <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} /> 
           <Stack.Screen
           name="RepairForm"

@@ -11,15 +11,13 @@ const Login = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    // Set up authentication listener
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         // User is signed in, navigate to the main screen
-        navigation.replace('MainScreen');
+        navigation.replace('HomeScreen', { userId: user.uid });
       }
     });
 
-    // Clean up the listener when component unmounts
     return unsubscribe;
   }, []);
 
@@ -28,7 +26,9 @@ const Login = ({ navigation }) => {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
-        // No need to navigate here, onAuthStateChanged listener will handle it
+        console.log("User ID before navigating to HomeScreen:", userId)
+        // Navigate to HomeScreen and pass user ID as route parameter
+        navigation.replace('HomeScreen', { userId: user.uid });
       })
       .catch(error => {
         console.error('Login error:', error.message);
