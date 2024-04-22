@@ -7,8 +7,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const MeetingFormScreen = ({ route }) => {
   const [meetingDate, setMeetingDate] = useState(new Date());
   const [meetingTime, setMeetingTime] = useState('');
-  const [meetingLocation, setMeetingLocation] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [reason, setReason] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const { technicianId } = route.params;
 
@@ -18,7 +20,8 @@ const MeetingFormScreen = ({ route }) => {
         technicianId,
         meetingDate: meetingDate.toISOString().split('T')[0], // Convert date to ISO string format
         meetingTime,
-        meetingLocation,
+        fullName,
+        reason,
         status: 'Available',
       });
       // Optionally, you can navigate back to the previous screen or perform any other action upon successful submission
@@ -29,40 +32,70 @@ const MeetingFormScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Date:</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <Text>{meetingDate.toDateString()}</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={meetingDate}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(Platform.OS === 'ios'); // Hide the date picker on iOS
-            if (selectedDate) {
-              setMeetingDate(selectedDate);
-            }
-          }}
+     
+      <View style={styles.cont}>
+
+      <Text style={styles.label}>Full Name:</Text>
+        <TextInput
+          style={styles.input}
+          value={fullName}
+          onChangeText={setFullName}
+          placeholder="Enter your full name"
         />
-      )}
-      <Text style={styles.label}>Time:</Text>
-      <TextInput
-        style={styles.input}
-        value={meetingTime}
-        onChangeText={setMeetingTime}
-        placeholder="Enter meeting time"
-      />
-      <Text style={styles.label}>Location:</Text>
-      <TextInput
-        style={styles.input}
-        value={meetingLocation}
-        onChangeText={setMeetingLocation}
-        placeholder="Enter meeting location"
-      />
-      <TouchableOpacity style={styles.button} onPress={sendMeetingRequest}>
-        <Text style={styles.buttonText}>Send Meeting Request</Text>
-      </TouchableOpacity>
+
+        <Text style={styles.label}>Reason for the Meeting:</Text>
+        <TextInput
+          style={[styles.input, { height: 100 }]} // Increase height for a larger input area
+          value={reason}
+          onChangeText={setReason}
+          placeholder="Enter the reason for the meeting"
+          multiline
+        />
+        
+        <Text style={styles.label}>Date:</Text>
+        <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+          <Text>{meetingDate.toDateString()}</Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={meetingDate}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(Platform.OS === 'ios'); // Hide the date picker on iOS
+              if (selectedDate) {
+                setMeetingDate(selectedDate);
+              }
+            }}
+          />
+        )}
+
+        <Text style={styles.label}>Time:</Text>
+        <TouchableOpacity style={styles.timeInput} onPress={() => setShowTimePicker(true)}>
+          <Text>{meetingTime || 'Select meeting time'}</Text>
+        </TouchableOpacity>
+        {showTimePicker && (
+          <DateTimePicker
+            value={meetingDate}
+            mode="time"
+            display="default"
+            onChange={(event, selectedTime) => {
+              setShowTimePicker(Platform.OS === 'ios'); // Hide the time picker on iOS
+              if (selectedTime) {
+                const hours = selectedTime.getHours();
+                const minutes = selectedTime.getMinutes();
+                setMeetingTime(`${hours}:${minutes}`);
+              }
+            }}
+          />
+        )}
+
+      
+
+        <TouchableOpacity style={styles.button} onPress={sendMeetingRequest}>
+          <Text style={styles.buttonText}>Send Meeting Request</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -72,11 +105,33 @@ export default MeetingFormScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+  },
+  
+  cont: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop:60
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 5,
+    color:'#8B322C',
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+    color: 'grey', // Text color
+  },
+  timeInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+    color: '#ccc', // Text color
   },
   input: {
     borderWidth: 1,
@@ -84,16 +139,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
+    color:'grey'
   },
   button: {
-    backgroundColor: 'green',
+    backgroundColor: '#8B322C',
     padding: 15,
-    borderRadius: 5,
+    borderRadius:50,
     alignItems: 'center',
+    marginLeft:60,
+    width:200
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
   },
 });
-npm

@@ -138,7 +138,7 @@ const RepairScreen = ({ navigation }) => {
                   <Ionicons name="chatbox-outline" size={24} color="green" style={{ marginLeft: 30 ,marginTop:10}} />
                </TouchableOpacity>
                <TouchableOpacity onPress={() => handleScheduleMeeting(technician.id)}>
-                  <Ionicons name="calendar-outline" size={24} color="green" style={{marginLeft: 20,marginTop:10}} />
+                  <Ionicons name="calendar-outline" size={22} color="green" style={{marginLeft: 20,marginTop:10}} />
               </TouchableOpacity>
 
                </View>

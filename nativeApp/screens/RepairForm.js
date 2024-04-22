@@ -37,10 +37,6 @@ const RepairForm = ({ navigation }) => {
     }
   };
 
-  const handleBack = () => {
-    // Navigate back to RepairScreen
-    navigation.goBack();
-  };
   const closeModal = () => {
     setIsModalVisible(false);
     navigation.goBack();
@@ -109,9 +105,7 @@ const RepairForm = ({ navigation }) => {
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Text style={styles.submitButtonText}>Back</Text>
-          </TouchableOpacity>
+          
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
@@ -133,15 +127,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  header: {
-    backgroundColor: '#8B322C',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    height: 180,
-    marginBottom: 20,
-    marginLeft: 100,
-    borderBottomLeftRadius: 200
   },
   textHeader: {
     color: "white",
@@ -169,23 +154,16 @@ const styles = StyleSheet.create({
     width: 270
   },
   submitButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#8B322C',
     padding: 15,
-    borderRadius: 50,
     alignItems: 'center',
-    width: 100,
-    marginLeft: 20,
+    width: 200, 
     marginBottom: 20,
+    marginTop: 10,
+    marginLeft: 70,
+    borderRadius:50
   },
-  backButton: {
-    backgroundColor: 'grey',
-    padding: 15,
-    borderRadius: 50,
-    alignItems: 'center',
-    width: 100,
-    marginBottom: 20,
-    marginLeft:60
-  },
+
   submitButtonText: {
     color: 'white',
     fontSize: 16,
@@ -201,8 +179,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     fontWeight:'500',
-    
-
   },
   modalCloseButton: {
     backgroundColor: '#5BBCFF',
@@ -219,5 +195,6 @@ const styles = StyleSheet.create({
   }
 
 });
+
 
 export default RepairForm;
