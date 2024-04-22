@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const MeetingFormScreen = ({ route }) => {
-  const [meetingDate, setMeetingDate] = useState('');
+  const [meetingDate, setMeetingDate] = useState(new Date());
   const [meetingTime, setMeetingTime] = useState('');
   const [meetingLocation, setMeetingLocation] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { technicianId } = route.params;
 
@@ -14,10 +16,10 @@ const MeetingFormScreen = ({ route }) => {
     try {
       await addDoc(collection(db, 'MeetingRequests'), {
         technicianId,
-        meetingDate,
+        meetingDate: meetingDate.toISOString().split('T')[0], // Convert date to ISO string format
         meetingTime,
         meetingLocation,
-        status: 'pending', // You can set initial status as 'pending'
+        status: 'Available',
       });
       // Optionally, you can navigate back to the previous screen or perform any other action upon successful submission
     } catch (error) {
@@ -28,12 +30,22 @@ const MeetingFormScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Date:</Text>
-      <TextInput
-        style={styles.input}
-        value={meetingDate}
-        onChangeText={setMeetingDate}
-        placeholder="Enter meeting date"
-      />
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <Text>{meetingDate.toDateString()}</Text>
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          value={meetingDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(Platform.OS === 'ios'); // Hide the date picker on iOS
+            if (selectedDate) {
+              setMeetingDate(selectedDate);
+            }
+          }}
+        />
+      )}
       <Text style={styles.label}>Time:</Text>
       <TextInput
         style={styles.input}
@@ -84,3 +96,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+npm
