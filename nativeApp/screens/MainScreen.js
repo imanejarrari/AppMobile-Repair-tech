@@ -8,62 +8,52 @@ import RepairScreen from './RepairScreen';
 import SettingsScreen from './settingsScreen';
 import ChatScreen from './ChatScreen';
 
-
 // Screen names
 const homeName = 'Home';
 const repairName = 'Repair';
 const settingsName = 'Settings';
-const ChatName ="Chat";
+const chatName = 'Chat'; // Changed to camelCase for consistency
 
 const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
   return (
-  
-      <Tab.Navigator
-        initialRouteName={homeName}
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+    <Tab.Navigator
+      initialRouteName={homeName} // Corrected variable name
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-            if (route.name === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === repairName) {
-              iconName = focused ? 'build' : 'build-outline';
-            } else if (route.name === settingsName) {
-              iconName = focused ? 'settings' : 'settings-outline';
-            } else if (route.name === ChatName) {
-                iconName = focused ? 'chatbubble' : 'chatbubble-ellipses-outline';
-              }
+          if (route.name === homeName) {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === repairName) {
+            iconName = focused ? 'build' : 'build-outline';
+          } else if (route.name === settingsName) {
+            iconName = focused ? 'settings' : 'settings-outline';
+          } else if (route.name === chatName) { // Corrected variable name
+            iconName = focused ? 'chatbubble' : 'chatbubble-ellipses-outline';
+          }
 
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: '#8B322C',
-          inactiveTintColor: 'gray',
-
-        }}
-      >
-        <Tab.Screen name={homeName} component={HomeScreen} 
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: '#8B322C',
+        inactiveTintColor: 'gray',
+      }}
+    >
+      <Tab.Screen
+        name={homeName}
+        component={HomeScreen}
         options={{
-          headerShadowVisible:false,
-          headerShown: false, 
+          headerShown: false,
         }}
-        />
-        <Tab.Screen name={repairName}  component={RepairScreen} 
-              
-                
-        />
-        <Tab.Screen name={ChatName} options={{ headerShown: false }} component={ChatScreen} />
-        <Tab.Screen name={settingsName} options={{ headerShown: false }} component={SettingsScreen} />
-       
-        
-      </Tab.Navigator>
-    
+      />
+      <Tab.Screen name={repairName} component={RepairScreen} options={{ headerShown: false }}   />
+      <Tab.Screen name={chatName} component={ChatScreen} options={{ headerShown: false }} />
+      <Tab.Screen name={settingsName} component={SettingsScreen} options={{ headerShown: false }} />
+    </Tab.Navigator>
   );
 };
 
 export default MainScreen;
-
-

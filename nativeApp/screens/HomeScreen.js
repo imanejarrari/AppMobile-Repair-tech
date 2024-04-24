@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db } from '../firebase/firebase';
 import { collection, query, getDocs } from 'firebase/firestore';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
 
   useEffect(() => {
@@ -28,19 +28,26 @@ const HomeScreen = () => {
     fetchCurrentUser();
   }, []);
 
+  // Function to handle navigation to the profile screen
+  const goToProfileScreen = () => {
+    navigation.navigate('settingsScreen');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Image 
-            source={require('../profile.jpg')}
-            style={styles.avatar}
-          />
-          <Text style={styles.head}>
-            Glad to see you !{'\n'}
-            {currentUserName}
-          </Text>
-        </View>
+        <TouchableOpacity onPress={goToProfileScreen}>
+          <View style={styles.headerLeft}>
+            <Image 
+              source={require('../picture.png')}
+              style={styles.avatar}
+            />
+            <Text style={{ color: 'white', fontSize: 13, letterSpacing: 1 }}>
+              Glad to see you !{'\n'}
+              <Text style={{ fontSize: 15, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text> 
+            </Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.headerRight}>
           <Ionicons 
             name={'notifications-outline'}
@@ -48,6 +55,9 @@ const HomeScreen = () => {
             color={'white'}
           />
         </View>
+      </View>
+      <View style={styles.sousHeader}>
+       
       </View>
     </View>
   );
@@ -65,7 +75,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    height: 150,
+    borderBottomLeftRadius: 90,
+    borderBottomRightRadius: 90,
+    height: 170,
+  },
+  sousHeader:{
+    position:'absolute',
+    marginTop:120,
+    width:300,
+    marginLeft:30,
+    borderWidth:1,
+    height:90,
+    borderColor:'white',
+    backgroundColor:'white',
+  
   },
   headerLeft: {
     flexDirection: 'row',
@@ -80,10 +103,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     marginRight: 10,
-  },
-  head: {
-    color: 'white',
-    fontSize: 18,
+    
   },
 });
 

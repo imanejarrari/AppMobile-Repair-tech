@@ -58,14 +58,14 @@ const RepairScreen = ({ navigation }) => {
         return {}; 
     }
   };
-   // Function to handle navigation when "Send Message" icon is pressed
+   // Function to handle send msg
    const handleSendMessage = (technicianId) => {
-    // Navigate to ChatScreen and pass the technicianId as a parameter
+   
     navigation.navigate('ChatScreen', { technicianId });
   };
   
 
-  // Function to handle navigation when "Schedule Meeting" icon is pressed
+  // Function to handle Schedule Meeting
   const handleScheduleMeeting = (technicianId) => {
     navigation.navigate('MeetingFormScreen', { technicianId });
   };
