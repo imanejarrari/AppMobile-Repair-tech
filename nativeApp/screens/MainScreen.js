@@ -48,14 +48,11 @@ const MainScreen = () => {
         <Tab.Screen name={homeName} component={HomeScreen} 
         options={{
           headerShadowVisible:false,
-          headerShown: false,
+          headerShown: false, 
         }}
         />
         <Tab.Screen name={repairName}  component={RepairScreen} 
-                options={{
-                  headerShown: false ,
-                
-                }}
+              
                 
         />
         <Tab.Screen name={ChatName} options={{ headerShown: false }} component={ChatScreen} />

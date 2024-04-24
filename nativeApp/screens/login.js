@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
@@ -8,32 +8,17 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in, navigate to the main screen
-        navigation.replace('HomeScreen', { userId: user.uid });
-      }
-    });
-
-    return unsubscribe;
-  }, []);
-
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(userCredentials => {
-        const user = userCredentials.user;
-        console.log('Logged in with:', user.email);
-        console.log("User ID before navigating to HomeScreen:", userId)
-        // Navigate to HomeScreen and pass user ID as route parameter
-        navigation.replace('HomeScreen', { userId: user.uid });
-      })
-      .catch(error => {
-        console.error('Login error:', error.message);
-        setErrorMessage(error.message);
-      });
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // If login is successful, navigate to HomeScreen
+      navigation.navigate('HomeScreen', { email: userCredential.user.email });
+    } catch (error) {
+      // Update the error message state
+      setErrorMessage(error.message);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -66,7 +51,7 @@ const Login = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+      {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
       <View>
         <Text style={{ color: 'black', fontSize: 15, marginTop: 15 }}>
           Don't have an account?{' '}
@@ -121,7 +106,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
-
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -141,9 +125,6 @@ const styles = StyleSheet.create({
   eyeIconContainer: {
     position: 'absolute',
     right: 10,
-  },
-  eyeIcon: {
-    fontSize: 18,
   },
   errorMessage: {
     color: 'red',
