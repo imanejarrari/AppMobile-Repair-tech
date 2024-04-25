@@ -34,7 +34,7 @@ const SettingsScreen = ({ navigation }) => {
     // Implement your log out logic here
     // For example, you can clear authentication token, reset state, etc.
     // Then navigate to the login screen
-    navigation.navigate('Login');
+    navigation.navigate('login');
   };
 
   // Function to handle reporting
