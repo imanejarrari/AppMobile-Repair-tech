@@ -28,44 +28,44 @@ const SettingsScreen = ({ navigation }) => {
 
     fetchCurrentUser();
   }, []);
-  
+
   // Function to handle log out
   const handleLogout = () => {
-    // Implement your log out logic here
-    // For example, you can clear authentication token, reset state, etc.
-    // Then navigate to the login screen
     navigation.navigate('login');
   };
 
   // Function to handle reporting
   const handleReport = () => {
-    // Implement your reporting logic here
-    // For example, navigate to a screen where users can submit a report
     navigation.navigate('ReportScreen');
   };
 
   // Function to handle deleting the account
   const handleDeleteAccount = () => {
-    // Implement your delete account logic here
-    // For example, navigate to a screen where users can confirm deletion
     navigation.navigate('DeleteAccountScreen');
+  };
+
+  // Function to navigate to the profile screen
+  const navigateToProfile = () => {
+    navigation.navigate('ProfileScreen');
   };
 
   return (
     <LinearGradient
-      colors={['#FFAFBD' ,'#FFFFFF']}
+      colors={['#8B322C', '#FFFFFF']}
       style={styles.container}
     >
-      <View>
-        <View style={styles.header}>  
-          <View style={styles.headerLeft}>
-            <Image 
-              source={require('../picture.png')}
-              style={styles.avatar}
-            />
-            <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text> 
+      <View style={{ backgroundColor: 'white', marginTop: 150, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 550 }}>
+        <TouchableOpacity onPress={navigateToProfile}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <Image
+                source={require('../picture.png')}
+                style={styles.avatar}
+              />
+              <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text>
+            </View>
           </View>
-        </View>  
+        </TouchableOpacity>
 
         {/* Buttons for log out, report, and delete account with icons and arrows */}
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
@@ -101,12 +101,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 200,
+
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 20,
-    marginTop: 45
+    marginLeft: 10,
+    borderBottomWidth: 1,
+    width: 300,
+    borderColor: '#8B322C'
   },
   avatar: {
     width: 80,
@@ -123,11 +126,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 15
   },
   icon: {
     marginRight: 10,
-    marginLeft:50
-  },
+    marginLeft: 50,
+    marginBottom: 15
+  },  
   arrowIcon: {
     marginLeft: 'auto',
   },

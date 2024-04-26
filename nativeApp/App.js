@@ -10,6 +10,8 @@ import { View ,Text} from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import RepairScreen from './screens/RepairScreen';
 import SettingsScreen from './screens/settingsScreen';
+import ProfileScreen from './screens/ProfileScreen';
+
 
 
 
@@ -60,6 +62,7 @@ const App = () => {
           }} 
         />
         <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
