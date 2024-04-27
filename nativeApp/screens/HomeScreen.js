@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db } from '../firebase/firebase';
-import { collection, query, getDocs } from 'firebase/firestore';
+import { collection, query, getDocs , where } from 'firebase/firestore';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation , route}) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
+  const { Uemail } = route.params; 
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const q = query(collection(db, "users"));
+        const q = query(collection(db, "users"), where('email','==',Uemail)); // Corrected query syntax
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {

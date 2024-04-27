@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { db } from '../firebase/firebase';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from react-native-vector-icons
+import { Ionicons } from '@expo/vector-icons'; 
+import { auth } from '../firebase/firebase'; 
 
 const SettingsScreen = ({ navigation }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
@@ -30,8 +31,18 @@ const SettingsScreen = ({ navigation }) => {
   }, []);
 
   // Function to handle log out
-  const handleLogout = () => {
-    navigation.navigate('login');
+  const handleLogout = async () => {
+    try {
+      await auth.signOut(); // Sign out the user
+      // Clear any additional data or tokens if needed
+      navigation.reset({ 
+        index: 0,
+        routes: [{ name: 'login' }] // Navigate to the login screen
+      });
+    } catch (error) {
+      console.error('Error logging out:', error);
+      // Handle any errors if sign out fails
+    }
   };
 
   // Function to handle reporting

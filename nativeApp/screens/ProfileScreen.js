@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { db, auth } from '../firebase/firebase';
-import { collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from react-native-vector-icons
-import * as ImagePicker from 'expo-image-picker'; // Import ImagePicker from Expo
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 const ProfileScreen = ({ navigation }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
   const [profilePicture, setProfilePicture] = useState(null);
+  const defaultProfilePicture = require('../picture.png'); // Import the default profile picture
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -20,7 +21,7 @@ const ProfileScreen = ({ navigation }) => {
           if (docSnap.exists()) {
             const userData = docSnap.data();
             setCurrentUserName(userData.firstName);
-            setProfilePicture(userData.profilePicture);
+            setProfilePicture(userData.profilePicture || defaultProfilePicture); // Use default picture if no picture is set
           } else {
             console.error('User document does not exist.');
           }
@@ -28,7 +29,8 @@ const ProfileScreen = ({ navigation }) => {
           console.error('Error fetching current user:', error);
         }
       } else {
-        console.error('User not logged in.');
+        setCurrentUserName('No Name'); // Reset user name
+        setProfilePicture(defaultProfilePicture); // Set default profile picture when user is not logged in
       }
     });
 
@@ -57,7 +59,7 @@ const ProfileScreen = ({ navigation }) => {
 
     if (!result.cancelled) {
       // Update the profile picture state with the URI of the selected image
-      setProfilePicture(result.assets[0].uri);
+      setProfilePicture(result.uri);
 
       // Save the new profile picture URI to Firestore
       try {
@@ -65,7 +67,7 @@ const ProfileScreen = ({ navigation }) => {
         if (user) {
           const userEmail = user.email;
           const docRef = doc(db, 'users', userEmail);
-          await updateDoc(docRef, { profilePicture: result.assets[0].uri });
+          await updateDoc(docRef, { profilePicture: result.uri });
         } else {
           console.error('User not logged in.');
         }
@@ -83,14 +85,12 @@ const ProfileScreen = ({ navigation }) => {
       <View style={{ backgroundColor: 'white', marginTop: 150, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 550 }}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            {profilePicture && (
-              <TouchableOpacity onPress={pickImage}>
-                <Image
-                  source={{ uri: profilePicture }}
-                  style={styles.avatar}
-                />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                source={profilePicture || defaultProfilePicture} // Use default picture if no picture is set
+                style={styles.avatar}
+              />
+            </TouchableOpacity>
             <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text>
           </View>
         </View>
