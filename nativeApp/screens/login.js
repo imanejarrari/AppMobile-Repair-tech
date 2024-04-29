@@ -14,7 +14,8 @@ const Login = ({ navigation }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       // If login is successful, navigate to HomeScreen
-      navigation.navigate('HomeScreen', { Uemail: userCredential.user.email });
+      navigation.navigate('HomeScreen', { email: userCredential.user.email });
+      console.log('logged with:' , email)
     } catch (error) {
       // Update the error message state
       setErrorMessage(error.message);

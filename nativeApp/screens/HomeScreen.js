@@ -6,12 +6,12 @@ import { collection, query, getDocs , where } from 'firebase/firestore';
 
 const HomeScreen = ({ navigation , route}) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
-  const { Uemail } = route.params; 
+ 
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const q = query(collection(db, "users"), where('email','==',Uemail)); // Corrected query syntax
+        const q = query(collection(db, "users")); 
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
