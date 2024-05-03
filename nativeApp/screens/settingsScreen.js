@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../firebase/firebase'; 
 
 const SettingsScreen = ({ navigation }) => {
-  const [currentUserName, setCurrentUserName] = useState('No Name');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -16,32 +16,29 @@ const SettingsScreen = ({ navigation }) => {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
-            setCurrentUserName(doc.data().firstName);
+            setCurrentUser(doc.data());
           });
         } else {
-          setCurrentUserName('No Name');
+          setCurrentUser(null);
         }
       } catch (error) {
         console.error('Error fetching current user:', error);
-        setCurrentUserName('No Name');
+        setCurrentUser(null);
       }
     };
 
     fetchCurrentUser();
   }, []);
 
-  // Function to handle log out
   const handleLogout = async () => {
     try {
-      await auth.signOut(); // Sign out the user
-      // Clear any additional data or tokens if needed
+      await auth.signOut();
       navigation.reset({ 
         index: 0,
-        routes: [{ name: 'login' }] // Navigate to the login screen
+        routes: [{ name: 'login' }]
       });
     } catch (error) {
       console.error('Error logging out:', error);
-      // Handle any errors if sign out fails
     }
   };
 
@@ -55,8 +52,8 @@ const SettingsScreen = ({ navigation }) => {
     navigation.navigate('DeleteAccountScreen');
   };
 
-  // Function to navigate to the profile screen
-  const navigateToProfile = () => {
+  const handleUsernamePress = () => {
+    // Navigate to the screen where user information will be displayed
     navigation.navigate('ProfileScreen');
   };
 
@@ -66,19 +63,17 @@ const SettingsScreen = ({ navigation }) => {
       style={styles.container}
     >
       <View style={{ backgroundColor: 'white', marginTop: 100, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 650 }}>
-        <TouchableOpacity onPress={navigateToProfile}>
+        <TouchableOpacity onPress={handleUsernamePress}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
               <Image
                 source={require('../picture.png')}
                 style={styles.avatar}
               />
-              <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text>
+              <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUser ? currentUser.firstName : 'No Name'}</Text>
             </View>
           </View>
         </TouchableOpacity>
-
-        {/* Buttons for log out, report, and delete account with icons and arrows */}
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="#8B322C" style={styles.icon} />
           <Text style={styles.buttonText}>Log Out</Text>
@@ -112,7 +107,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 200,
-
   },
   headerLeft: {
     flexDirection: 'row',
@@ -126,6 +120,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
+    marginRight: 10,
   },
   button: {
     flexDirection: 'row',

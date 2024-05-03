@@ -1,103 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { db, auth } from '../firebase/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { db } from '../firebase/firebase';
+import { collection, query, getDocs } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 
-const ProfileScreen = ({ navigation }) => {
-  const [currentUserName, setCurrentUserName] = useState('No Name');
-  const [profilePicture, setProfilePicture] = useState(null);
-  const defaultProfilePicture = require('../picture.png'); // Import the default profile picture
+const ProfileScreen = () => {
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const userEmail = user.email;
-        try {
-          const docRef = doc(db, 'users', userEmail);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            setCurrentUserName(userData.firstName);
-            setProfilePicture(userData.profilePicture || defaultProfilePicture); // Use default picture if no picture is set
-          } else {
-            console.error('User document does not exist.');
-          }
-        } catch (error) {
-          console.error('Error fetching user document:', error);
-        }
-      } else {
-        setCurrentUserName('No Name');
-        setProfilePicture(defaultProfilePicture);
-      }
-    });
-  
-    return () => unsubscribe();
-  }, []);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      const selectedImage = result.assets[0];
-      setProfilePicture(selectedImage.uri);
-
+    const fetchCurrentUser = async () => {
       try {
-        const user = auth.currentUser;
-        if (user) {
-          const userEmail = user.email;
-          const docRef = doc(db, 'users', userEmail);
-          await updateDoc(docRef, { profilePicture: selectedImage.uri });
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            setCurrentUser(doc.data());
+          });
         } else {
-          console.error('User not logged in.');
+          setCurrentUser(null);
         }
       } catch (error) {
-        console.error('Error updating profile picture:', error);
+        console.error('Error fetching current user:', error);
+        setCurrentUser(null);
       }
-    }
-  };
+    };
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigation.navigate('login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-      Alert.alert('Error', 'Could not log out. Please try again later.');
-    }
-  };
+    fetchCurrentUser();
+  }, []);
 
   return (
     <LinearGradient
       colors={['#8B322C', '#FFFFFF']}
       style={styles.container}
     >
-      <View style={{ backgroundColor: 'white', marginTop: 150, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 550 }}>
+      <View style={styles.profileContainer}>
         <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={pickImage}>
-              <Image
-                source={profilePicture || defaultProfilePicture} // Use default picture if no picture is set
-                style={styles.avatar}
-              />
-            </TouchableOpacity>
-            <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text>
-          </View>
+          <Image
+            source={require('../picture.png')}
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{currentUser ? currentUser.firstName : 'No Name'}</Text>
         </View>
-
-        {/* Buttons for log out and edit profile */}
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="#8B322C" style={styles.icon} />
-          <Text style={styles.buttonText}>Log Out</Text>
-          <Ionicons name="chevron-forward-outline" size={24} color="#8B322C" style={styles.arrowIcon} />
-        </TouchableOpacity>
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.userInfo}>Email: {currentUser ? currentUser.email : 'No Email'}</Text>
+          {/* Add more user information as needed */}
+        </View>
       </View>
     </LinearGradient>
   );
@@ -108,46 +55,35 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileContainer: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    height: 200,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 10,
-    borderBottomWidth: 1,
-    width: 300,
-    borderColor: '#8B322C'
+    marginBottom: 20,
   },
   avatar: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     borderRadius: 50,
+    marginBottom: 10,
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 10,
-  },
-  buttonText: {
-    color: 'black',
-    fontSize: 16,
+  username: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 15
   },
-  icon: {
-    marginRight: 10,
-    marginLeft: 50,
-    marginBottom: 15
+  userInfoContainer: {
+    alignItems: 'flex-start',
   },
-  arrowIcon: {
-    marginLeft: 'auto',
+  userInfo: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
