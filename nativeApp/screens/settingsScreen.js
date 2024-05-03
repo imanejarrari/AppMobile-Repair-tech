@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { db } from '../firebase/firebase';
-import { collection, query, getDocs } from 'firebase/firestore';
+import { collection, query, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons'; 
 import { auth } from '../firebase/firebase'; 
+import * as ImagePicker from 'expo-image-picker';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
 const SettingsScreen = ({ navigation }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -42,19 +44,51 @@ const SettingsScreen = ({ navigation }) => {
     }
   };
 
-  // Function to handle reporting
   const handleReport = () => {
     navigation.navigate('ReportScreen');
   };
 
-  // Function to handle deleting the account
   const handleDeleteAccount = () => {
     navigation.navigate('DeleteAccountScreen');
   };
 
   const handleUsernamePress = () => {
-    // Navigate to the screen where user information will be displayed
     navigation.navigate('ProfileScreen');
+  };
+
+  const handleChooseImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert('Permission Denied', 'Permission to access camera roll is required!');
+      return;
+    }
+
+    const imagePickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!imagePickerResult.cancelled) {
+      // Upload the selected image to Firebase Storage
+      const response = await fetch(imagePickerResult.uri);
+      const blob = await response.blob();
+      const storageRef = ref(db.storage, `profilePictures/${currentUser.uid}`);
+      await uploadString(storageRef, blob, 'data_url');
+
+      // Get the download URL of the uploaded image
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // Update the user's profile picture in Firestore
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await updateDoc(userDocRef, {
+        profilePicture: downloadURL,
+      });
+
+      // Update currentUser state with the new profile picture URL
+      setCurrentUser({ ...currentUser, profilePicture: downloadURL });
+    }
   };
 
   return (
@@ -66,10 +100,12 @@ const SettingsScreen = ({ navigation }) => {
         <TouchableOpacity onPress={handleUsernamePress}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-              <Image
-                source={require('../picture.png')}
-                style={styles.avatar}
-              />
+              <TouchableOpacity onPress={handleChooseImage}>
+                <Image
+                  source={currentUser ? { uri: currentUser.profilePicture } : require('../picture.png')}
+                  style={styles.avatar}
+                />
+              </TouchableOpacity>
               <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUser ? currentUser.firstName : 'No Name'}</Text>
             </View>
           </View>
