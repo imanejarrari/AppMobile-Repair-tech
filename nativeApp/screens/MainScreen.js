@@ -11,7 +11,7 @@ import ChatScreen from './ChatScreen';
 // Screen names
 const homeName = 'Home';
 const repairName = 'Repair';
-const settingsName = 'Settings';
+const settingsName = 'Me';
 const chatName = 'Chat'; // Changed to camelCase for consistency
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ const MainScreen = () => {
           } else if (route.name === repairName) {
             iconName = focused ? 'build' : 'build-outline';
           } else if (route.name === settingsName) {
-            iconName = focused ? 'settings' : 'settings-outline';
+            iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === chatName) { // Corrected variable name
             iconName = focused ? 'chatbubble' : 'chatbubble-ellipses-outline';
           }
