@@ -10,12 +10,16 @@ const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const navigateToHomeScreen = () => {
+    navigation.navigate('homeName');
+  };
+
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // If login is successful, navigate to HomeScreen
-      navigation.navigate('HomeScreen', { email: userCredential.user.email });
-      console.log('logged with:' , email)
+      // If login is successful, call the callback function
+      navigateToHomeScreen();
+      console.log('logged with:', email);
     } catch (error) {
       // Update the error message state
       setErrorMessage(error.message);

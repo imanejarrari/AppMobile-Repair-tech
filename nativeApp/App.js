@@ -20,11 +20,11 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='home'> 
+      <Stack.Navigator initialRouteName='login'> 
         <Stack.Screen name="signUp" component={SignUp} options={{ headerShown: false }} />
         <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="home" component={MainScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="homeName" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RepairScreen" component={RepairScreen} options={{ headerShown: false }} />
         <Stack.Screen name="settingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
         <Stack.Screen

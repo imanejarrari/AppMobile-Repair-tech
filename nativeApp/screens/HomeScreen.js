@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db } from '../firebase/firebase';
-import { collection, query, getDocs , where } from 'firebase/firestore';
+import { collection, query, getDocs, where } from 'firebase/firestore';
 
-const HomeScreen = ({ navigation , route}) => {
+const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
- 
+
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const q = query(collection(db, "users")); 
+        const q = query(collection(db, "users"));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation , route}) => {
     };
 
     fetchCurrentUser();
-  }, []);
+  }, []); // Add email to dependencies to re-fetch on email change
 
   // Function to handle navigation to the profile screen
   const goToProfileScreen = () => {
