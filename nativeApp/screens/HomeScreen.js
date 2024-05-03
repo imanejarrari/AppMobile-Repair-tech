@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation, route }) => {
     };
 
     fetchCurrentUser();
-  }, []); // Add email to dependencies to re-fetch on email change
+  }, []); 
 
   // Function to handle navigation to the profile screen
   const goToProfileScreen = () => {
@@ -39,27 +39,18 @@ const HomeScreen = ({ navigation, route }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={goToProfileScreen}>
           <View style={styles.headerLeft}>
-            <Image 
-              source={require('../picture.png')}
-              style={styles.avatar}
-            />
-            <Text style={{ color: 'white', fontSize: 13, letterSpacing: 1 }}>
-              Glad to see you !{'\n'}
-              <Text style={{ fontSize: 15, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUserName}</Text> 
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.headerRight}>
-          <Ionicons 
+           <Ionicons 
             name={'notifications-outline'}
             size={30}
             color={'white'}
           />
+          </View>
+        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          
         </View>
       </View>
-      <View style={styles.sousHeader}>
-       
-      </View>
+     
     </View>
   );
 };
@@ -76,20 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 90,
-    borderBottomRightRadius: 90,
-    height: 170,
-  },
-  sousHeader:{
-    position:'absolute',
-    marginTop:120,
-    width:300,
-    marginLeft:30,
-    borderWidth:1,
-    height:90,
-    borderColor:'white',
-    backgroundColor:'white',
-  
+    height: 100,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -98,14 +76,7 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  avatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 10,
-    
-  },
+  }
 });
 
 export default HomeScreen;
