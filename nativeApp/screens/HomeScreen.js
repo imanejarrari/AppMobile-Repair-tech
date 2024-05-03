@@ -3,10 +3,11 @@ import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db } from '../firebase/firebase';
 import { collection, query, getDocs, where } from 'firebase/firestore';
+import ProgressBar from 'react-native-progress/Bar';
 
 const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
-
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -39,18 +40,17 @@ const HomeScreen = ({ navigation, route }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={goToProfileScreen}>
           <View style={styles.headerLeft}>
-           <Ionicons 
-            name={'notifications-outline'}
-            size={30}
-            color={'white'}
-          />
+            <Ionicons 
+              name={'notifications-outline'}
+              size={30}
+              color={'white'}
+            />
           </View>
         </TouchableOpacity>
         <View style={styles.headerRight}>
-          
+          <ProgressBar progress={progress} width={150} color={'white'} />
         </View>
       </View>
-     
     </View>
   );
 };
