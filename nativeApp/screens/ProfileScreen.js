@@ -26,29 +26,17 @@ const ProfileScreen = ({ navigation }) => {
             console.error('User document does not exist.');
           }
         } catch (error) {
-          console.error('Error fetching current user:', error);
+          console.error('Error fetching user document:', error);
         }
       } else {
-        setCurrentUserName('No Name'); // Reset user name
-        setProfilePicture(defaultProfilePicture); // Set default profile picture when user is not logged in
+        setCurrentUserName('No Name');
+        setProfilePicture(defaultProfilePicture);
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
 
-  // Function to handle log out
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigation.navigate('login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-      Alert.alert('Error', 'Could not log out. Please try again later.');
-    }
-  };
-
-  // Function to handle picking a new profile picture
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -58,22 +46,31 @@ const ProfileScreen = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      // Update the profile picture state with the URI of the selected image
-      setProfilePicture(result.uri);
+      const selectedImage = result.assets[0];
+      setProfilePicture(selectedImage.uri);
 
-      // Save the new profile picture URI to Firestore
       try {
         const user = auth.currentUser;
         if (user) {
           const userEmail = user.email;
           const docRef = doc(db, 'users', userEmail);
-          await updateDoc(docRef, { profilePicture: result.uri });
+          await updateDoc(docRef, { profilePicture: selectedImage.uri });
         } else {
           console.error('User not logged in.');
         }
       } catch (error) {
         console.error('Error updating profile picture:', error);
       }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigation.navigate('login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      Alert.alert('Error', 'Could not log out. Please try again later.');
     }
   };
 

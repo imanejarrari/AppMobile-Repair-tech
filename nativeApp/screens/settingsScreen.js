@@ -65,7 +65,7 @@ const SettingsScreen = ({ navigation }) => {
       colors={['#8B322C', '#FFFFFF']}
       style={styles.container}
     >
-      <View style={{ backgroundColor: 'white', marginTop: 150, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 550 }}>
+      <View style={{ backgroundColor: 'white', marginTop: 100, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 650 }}>
         <TouchableOpacity onPress={navigateToProfile}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
