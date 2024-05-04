@@ -11,6 +11,8 @@ import HomeScreen from './screens/HomeScreen';
 import RepairScreen from './screens/RepairScreen';
 import SettingsScreen from './screens/settingsScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import BurgerMenu from './screens/HeaderMenu';
+
 
 
 
@@ -27,6 +29,7 @@ const App = () => {
         <Stack.Screen name="homeName" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RepairScreen" component={RepairScreen} options={{ headerShown: false }} />
         <Stack.Screen name="settingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="HeaderMenu" component={BurgerMenu} options={{ headerShown: false }} />
         <Stack.Screen
           name="RepairForm"
           component={RepairForm}

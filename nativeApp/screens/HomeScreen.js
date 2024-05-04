@@ -1,26 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { db } from '../firebase/firebase';
-import { collection, query, getDocs, where } from 'firebase/firestore';
-import ProgressBar from 'react-native-progress/Bar';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import BurgerMenu from './HeaderMenu';
 
 const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
-  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const q = query(collection(db, "users"));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            setCurrentUserName(doc.data().firstName);
-          });
-        } else {
-          setCurrentUserName('No Name');
-        }
+        // Your fetch logic to get current user data
       } catch (error) {
         console.error('Error fetching current user:', error);
         setCurrentUserName('No Name');
@@ -28,17 +17,14 @@ const HomeScreen = ({ navigation, route }) => {
     };
 
     fetchCurrentUser();
-  }, []); 
+  }, []);
 
-  // Function to handle navigation to the profile screen
-  const goToProfileScreen = () => {
-    navigation.navigate('settingsScreen');
-  };
+ 
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={goToProfileScreen}>
+        <TouchableOpacity>
           <View style={styles.headerLeft}>
             <Ionicons 
               name={'notifications-outline'}
@@ -48,7 +34,7 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         <View style={styles.headerRight}>
-          <ProgressBar progress={progress} width={150} color={'white'} />
+          <BurgerMenu navigation={navigation}/>
         </View>
       </View>
     </View>
