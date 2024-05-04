@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BurgerMenu from './HeaderMenu';
 import { query, collection, getDocs, orderBy, where } from "firebase/firestore";
 import { db } from '../firebase/firebase';
+import { Picker } from '@react-native-picker/picker';
 
 const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
   const [latestRepair, setLatestRepair] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
-  const [showFilterModal, setShowFilterModal] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -57,11 +57,6 @@ const HomeScreen = ({ navigation, route }) => {
     setSearchQuery(text);
   };
 
-  const handleStatusFilter = (status) => {
-    setFilterStatus(status);
-    setShowFilterModal(false); // Close the modal after selecting a status
-  };
-
   // Status colors and icons
   const getStatusStyle = (status) => {
     switch (status) {
@@ -106,9 +101,17 @@ const HomeScreen = ({ navigation, route }) => {
           onChangeText={handleSearch}
           value={searchQuery}
         />
-        <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilterModal(true)}>
-          <Text style={styles.filterText}>Filter Status</Text>
-        </TouchableOpacity>
+        <Picker
+          selectedValue={filterStatus}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) =>
+            setFilterStatus(itemValue)
+          }>
+          <Picker.Item label="All" value=""  />
+          <Picker.Item label="Completed" value="completed" />
+          <Picker.Item label="Pending" value="pending" />
+          <Picker.Item label="In Progress" value="in progress" />
+        </Picker>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -127,27 +130,6 @@ const HomeScreen = ({ navigation, route }) => {
           ))}
         </View>
       </ScrollView>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showFilterModal}
-        onRequestClose={() => setShowFilterModal(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.modalItem} onPress={() => handleStatusFilter('completed')}>
-              <Text style={styles.modalItemText}>Completed</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalItem} onPress={() => handleStatusFilter('pending')}>
-              <Text style={styles.modalItemText}>Pending</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalItem} onPress={() => handleStatusFilter('in progress')}>
-              <Text style={styles.modalItemText}>In Progress</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -198,44 +180,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   searchInput: {
-    width: '60%',
+    width: '70%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    padding: 10,
+    marginLeft: 10,
+    height:'70%'
+  },
+  picker: {
+    width: '30%',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
-    marginLeft: 10,
-  },
-  filterButton: {
-    backgroundColor: '#8B322C',
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  filterText: {
-    color: 'white',
-    fontWeight: 'bold',
+    padding: 20,
   },
   scrollContainer: {
     flexGrow: 1,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-  },
-  modalItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  modalItemText: {
-    fontSize: 18,
   },
 });
 

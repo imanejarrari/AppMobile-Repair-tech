@@ -1,181 +1,203 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import BurgerMenu from './HeaderMenu';
+import { query, collection, getDocs, orderBy, where } from "firebase/firestore";
 import { db } from '../firebase/firebase';
-import { collection, query, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons'; 
-import { auth } from '../firebase/firebase'; 
-import * as ImagePicker from 'expo-image-picker';
-import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { Picker } from '@react-native-picker/picker';
 
-const SettingsScreen = ({ navigation }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+const HomeScreen = ({ navigation, route }) => {
+  const [currentUserName, setCurrentUserName] = useState('No Name');
+  const [latestRepair, setLatestRepair] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const q = query(collection(db, "users"));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            setCurrentUser(doc.data());
-          });
-        } else {
-          setCurrentUser(null);
-        }
+        // Your fetch logic to get current user data
       } catch (error) {
         console.error('Error fetching current user:', error);
-        setCurrentUser(null);
+        setCurrentUserName('No Name');
       }
     };
 
     fetchCurrentUser();
-  }, []);
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigation.reset({ 
-        index: 0,
-        routes: [{ name: 'login' }]
-      });
-    } catch (error) {
-      console.error('Error logging out:', error);
+    const fetchLatestRepair = async () => {
+      try {
+        let q = collection(db, "RepairRequest");
+
+        // Apply search filter
+        if (searchQuery) {
+          q = query(q, orderBy('device'), where('device', '==', searchQuery));
+        }
+
+        // Apply status filter
+        if (filterStatus) {
+          q = query(q, orderBy('status'), where('status', '==', filterStatus));
+        }
+
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const latestRepairData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setLatestRepair(latestRepairData);
+        } else {
+          setLatestRepair(null);
+        }
+      } catch (error) {
+        console.error('Error fetching latest repair request:', error);
+      }
+    };
+
+    fetchLatestRepair();
+  }, [searchQuery, filterStatus]);
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+  };
+
+  // Status colors and icons
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'completed':
+        return { color: 'white', borderWidth: 1, borderColor: "greenyellow", backgroundColor: "green", width: 100, paddingLeft: 15, borderRadius: 30, marginTop: 20, marginLeft: 90 };
+      case 'pending':
+        return { color: 'white', borderWidth: 1, borderColor: "#FF9999", backgroundColor: "#FF9999", width: 100, paddingLeft: 25, borderRadius: 30, marginTop: 20, marginLeft: 90 };
+      case 'in progress':
+        return { color: 'white', borderWidth: 1, borderColor: "#FFFFCC", backgroundColor: "#007AFF", width: 100, paddingLeft: 16, borderRadius: 30, marginTop: 20, marginLeft: 90 };
+      default:
+        return {};
     }
   };
 
-  const handleReport = () => {
-    navigation.navigate('ReportScreen');
-  };
-
-  const handleDeleteAccount = () => {
-    navigation.navigate('DeleteAccountScreen');
-  };
-
-  const handleUsernamePress = () => {
-    navigation.navigate('ProfileScreen');
-  };
-
-  const handleChooseImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('Permission Denied', 'Permission to access camera roll is required!');
-      return;
-    }
-
-    const imagePickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!imagePickerResult.cancelled) {
-      // Upload the selected image to Firebase Storage
-      const response = await fetch(imagePickerResult.uri);
-      const blob = await response.blob();
-      const storageRef = ref(db.storage, `profilePictures/${currentUser.uid}`);
-      await uploadString(storageRef, blob, 'data_url');
-
-      // Get the download URL of the uploaded image
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // Update the user's profile picture in Firestore
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userDocRef, {
-        profilePicture: downloadURL,
-      });
-
-      // Update currentUser state with the new profile picture URL
-      setCurrentUser({ ...currentUser, profilePicture: downloadURL });
-    }
+  const statusIcons = {
+    completed: { name: 'checkmark-done-outline', color: 'green' },
+    pending: { name: 'alert-circle-outline', color: '#FF9999' },
+    'in progress': { name: 'hourglass-outline', color: '#007AFF' },
   };
 
   return (
-    <LinearGradient
-      colors={['#8B322C', '#FFFFFF']}
-      style={styles.container}
-    >
-      <View style={{ backgroundColor: 'white', marginTop: 100, borderTopLeftRadius: 50, borderTopRightRadius: 50, height: 650 }}>
-        <TouchableOpacity onPress={handleUsernamePress}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <TouchableOpacity onPress={handleChooseImage}>
-                <Image
-                  source={currentUser ? { uri: currentUser.profilePicture } : require('../picture.png')}
-                  style={styles.avatar}
-                />
-              </TouchableOpacity>
-              <Text style={{ fontSize: 17, fontWeight: 'bold', letterSpacing: 1.5 }}>{currentUser ? currentUser.firstName : 'No Name'}</Text>
-            </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity>
+          <View style={styles.headerLeft}>
+            <Ionicons
+              name={'notifications-outline'}
+              size={30}
+              color={'white'}
+            />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="#8B322C" style={styles.icon} />
-          <Text style={styles.buttonText}>Log Out</Text>
-          <Ionicons name="chevron-forward-outline" size={24} color="#8B322C" style={styles.arrowIcon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleReport}>
-          <Ionicons name="alert-circle-outline" size={24} color="#8B322C" style={styles.icon} />
-          <Text style={styles.buttonText}>Report</Text>
-          <Ionicons name="chevron-forward-outline" size={24} color="#8B322C" style={styles.arrowIcon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
-          <Ionicons name="trash-outline" size={24} color="#8B322C" style={styles.icon} />
-          <Text style={styles.buttonText}>Delete Account</Text>
-          <Ionicons name="chevron-forward-outline" size={24} color="#8B322C" style={styles.arrowIcon} />
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <BurgerMenu navigation={navigation} />
+        </View>
       </View>
-    </LinearGradient>
+
+      <View style={styles.search}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by device name"
+          onChangeText={handleSearch}
+          value={searchQuery}
+        />
+        <Picker
+          selectedValue={filterStatus}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) =>
+            setFilterStatus(itemValue)
+          }>
+          <Picker.Item label="All" value="" />
+          <Picker.Item label="Completed" value="completed" />
+          <Picker.Item label="Pending" value="pending" />
+          <Picker.Item label="In Progress" value="in progress" />
+        </Picker>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.cardContainer}>
+          {latestRepair && latestRepair.map(repairs => (
+            <View key={repairs.id} style={styles.request}>
+              <Ionicons name={statusIcons[repairs.status].name} size={40} marginLeft={120} color={statusIcons[repairs.status].color} />
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', marginLeft: 90, marginTop: 1, letterSpacing: 1 }}>{repairs.device}</Text>
+              </View>
+              <Text style={{ marginTop: 10, fontSize: 13, fontWeight: 300, marginLeft: 10 }}>
+                {repairs.description}
+              </Text>
+              <Text style={[styles.status, getStatusStyle(repairs.status)]}>{repairs.status}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
-
-export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#8B322C',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    height: 200,
+    height: 100,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 10,
-    borderBottomWidth: 1,
-    width: 300,
-    borderColor: '#8B322C'
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 50,
-    marginRight: 10,
-  },
-  button: {
+  headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 10,
   },
-  buttonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15
+  request: {
+    marginLeft: 15,
+    marginTop: 20,
+    width: 330,
+    height: 180,
+    backgroundColor: 'white ',
+    elevation: 5,
+    shadowColor: '#5BBCFF',
+    borderColor: '#5BBCFF',
+    shadowOpacity: 10,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    padding: 20
   },
-  icon: {
+  search: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  searchInput: {
+    width: '60%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginLeft: 10,
+  },
+  picker: {
+    width: '30%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
     marginRight: 10,
-    marginLeft: 50,
-    marginBottom: 15
-  },  
-  arrowIcon: {
-    marginLeft: 'auto',
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
 });
+
+export default HomeScreen;
