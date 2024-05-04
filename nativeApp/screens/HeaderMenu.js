@@ -14,9 +14,16 @@ const BurgerMenu = ({ navigation }) => {
     toggleMenu(); // Close the menu after navigation
   };
 
-  const handleLogout = () => {
-    // Implement logout logic here
-    // Example: auth.signOut();
+  const handleLogout= async () => {
+    try {
+      await auth.signOut();
+      navigation.reset({ 
+        index: 0,
+        routes: [{ name: 'login' }]
+      });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
     toggleMenu(); // Close the menu after logout
   };
 
@@ -61,7 +68,7 @@ const styles = StyleSheet.create({
     top: 35,
     right: 1,
     paddingLeft: 20,
-    backgroundColor: 'whitesmoke',
+    backgroundColor: 'white',
     borderRadius: 5,
     padding: 10,
     zIndex: 1,

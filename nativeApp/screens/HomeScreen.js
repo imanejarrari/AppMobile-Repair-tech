@@ -42,16 +42,21 @@ const HomeScreen = ({ navigation, route }) => {
     const getStatusStyle = (status) => {
       switch (status) {
         case 'completed':
-          return { color: 'black' , borderWidth:1,borderColor:"green",backgroundColor:"green",width:100,paddingLeft:15,borderRadius:30,marginTop:15,marginLeft:25 }
+          return { color: 'white' , borderWidth:1,borderColor:"greenyellow",backgroundColor:"green",width:100,paddingLeft:15,borderRadius:30,marginTop:20,marginLeft:90 }
         case 'pending':
-          return { color: 'black' , borderWidth:1,borderColor:"yellow",backgroundColor:"yellow",width:100,paddingLeft:25,borderRadius:30,marginTop:15,marginLeft:25 };
+          return { color: 'white' , borderWidth:1,borderColor:"#FF9999",backgroundColor:"#FF9999",width:100,paddingLeft:25,borderRadius:30,marginTop:20,marginLeft:90 };
         case 'in progress':
-          return { color: 'black' , borderWidth:1,borderColor:"orange",backgroundColor:"orange",width:100,paddingLeft:16,borderRadius:30,marginTop:15,marginLeft:25 }
+          return { color: 'white' , borderWidth:1,borderColor:"#FFFFCC",backgroundColor:"#007AFF",width:100,paddingLeft:16,borderRadius:30,marginTop:20,marginLeft:90 }
         default:
           return {}; 
       }
     };
 
+    const statusIcons = {
+      completed: { name: 'checkmark-done-outline', color: 'green'  },
+      pending: { name: 'alert-circle-outline', color: '#FF9999' },
+      'in progress': { name: 'hourglass-outline', color: '#007AFF' },
+    };
  
 
     return (
@@ -71,15 +76,17 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </View>
   
-        <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
+        <ScrollView  contentContainerStyle={styles.scrollContainer}>
            
            <View style={styles.cardContainer}>
            {latestRepair && latestRepair.map(repairs => (
                <View key={repairs.id} style={styles.request}>
+                <Ionicons name={statusIcons[repairs.status].name} size={40} marginLeft={120} color={statusIcons[repairs.status].color} />
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text style={{color:'black' , fontSize:16 , fontWeight:'bold',marginLeft:40}}>{repairs.device}</Text> 
+
+                  <Text style={{color:'black' , fontSize:20 , fontWeight:'bold',marginLeft:90,marginTop:1,letterSpacing:1}}>{repairs.device}</Text> 
                 </View>
-                 <Text style={{marginTop:10,fontSize:12}}>
+                 <Text style={{marginTop:10,fontSize:13, fontWeight:300,marginLeft:10}}>
                    {repairs.description}
                  </Text>
                  <Text style={[styles.status, getStatusStyle(repairs.status)]}>{repairs.status}</Text>
@@ -115,19 +122,20 @@ const HomeScreen = ({ navigation, route }) => {
     },
    
     request: {
-      width: 320,
-      height: 150,
-      marginHorizontal: 10, 
-      borderWidth:0,
-      backgroundColor: 'white ',
-      borderRadius:30,
-      padding:20,
-      marginLeft:20,
+      marginLeft:15,
       marginTop:20,
-      borderWidth:1,
-      borderColor:'#8B322C',
-      shadowColor: '#8B322C',
-      shadowOpacity:1,
+      width: 330,
+      height: 180,
+      backgroundColor: 'white ',
+      elevation: 5,
+      shadowColor:'#5BBCFF',
+      borderColor:'#5BBCFF',
+      shadowOpacity: 10,
+      shadowOffset: {
+        width: 0,   
+        height: 2, 
+      },
+      padding:20
       
     },
   }); 
