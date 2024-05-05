@@ -83,7 +83,14 @@ const RepairScreen = ({ navigation }) => {
                   {/* End of Picker component */}
                 </View>
                 {technicians.map(technician => (
-                  <View key={technician.id} style={styles.tableRow}>
+                  <View key={technician.id}                     
+                  style={[
+                    styles.tableRow,
+                    technician.Availability ? null : styles.notAvailable 
+                  ]}
+
+                   
+                  > 
                     <Image 
                       source={require('../picture.png')}
                       style={styles.avatar}
@@ -187,6 +194,9 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     paddingLeft: 20,
     paddingBottom: 5,
+  },
+  notAvailable: {
+    backgroundColor: '#FF9999', 
   },
   buttonText: {
     fontSize: 15,
