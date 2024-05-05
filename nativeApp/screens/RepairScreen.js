@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native'; 
 import { query, collection, getDocs } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Picker } from '@react-native-picker/picker';
+
 
 const RepairScreen = ({ navigation }) => { 
   const [technicians, setTechnicians] = useState([]);
+  const [filter, setFilter] = useState("All"); // State to store filter value
 
   useEffect(() => {
     const fetchTechnicians = async () => {
@@ -13,14 +16,23 @@ const RepairScreen = ({ navigation }) => {
         const q = query(collection(db, "Technicians"));
         const querySnapshot = await getDocs(q);
         const technicianData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setTechnicians(technicianData);
+
+        // Filter technicians based on availability if filter is set
+        let filteredTechnicians = technicianData;
+        if (filter === "Available") {
+          filteredTechnicians = technicianData.filter(technician => technician.Availability === true);
+        } else if (filter === "Not Available") {
+          filteredTechnicians = technicianData.filter(technician => technician.Availability === false);
+        }
+
+        setTechnicians(filteredTechnicians);
       } catch (error) {
         console.error('Error fetching technicians:', error);
       }
     };
 
     fetchTechnicians();
-  }, []);
+  }, [filter]); // Run useEffect when filter changes
 
   const handleSendMessage = (technicianId) => {
     navigation.navigate('ChatScreen', { technicianId });
@@ -29,7 +41,7 @@ const RepairScreen = ({ navigation }) => {
   const handleScheduleMeeting = (technicianId) => {
     navigation.navigate('MeetingFormScreen', { technicianId });
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -48,32 +60,36 @@ const RepairScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.technicianContainer}>
-        
-          
             <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
               <View style={styles.tableContainer}>
-
-              <View style={{flexDirection: 'row',alignItems: 'center',}}>
+                <View style={styles.titleContainer}>
                   <Image 
-                   source={require('../technician.png')}
+                    source={require('../technician.png')}
                     style={styles.avatar1}
-                 />
+                  />
                   <Text style={styles.technicianTitle}>
                     Technicians
-                   </Text>
-                
+                  </Text>
+                  {/* Add Picker component */}
+                  <Picker
+                    selectedValue={filter}
+                    style={{ height: 50, width: 100,position:'absolute' ,left:230 , color:'#8B322C'}}
+                    onValueChange={(itemValue, itemIndex) => setFilter(itemValue)}
+                  >
+                    <Picker.Item label="All" value="All" />
+                    <Picker.Item label="Available" value="Available" />
+                    <Picker.Item label="Not Available" value="Not Available" />
+                  </Picker>
+                  {/* End of Picker component */}
                 </View>
-              
-              
-               
                 {technicians.map(technician => (
                   <View key={technician.id} style={styles.tableRow}>
-                     <Image 
-                   source={require('../picture.png')}
-                    style={styles.avatar}
-                 />
+                    <Image 
+                      source={require('../picture.png')}
+                      style={styles.avatar}
+                    />
                     <Text style={styles.column}>{technician.Name}</Text>
-                    <Text style={styles.column2}  >{technician.Specialization}</Text>
+                    <Text style={styles.column2}>{technician.Specialization}</Text>
                     <View style={styles.actions}>
                       <TouchableOpacity onPress={() => handleSendMessage(technician.id)}>
                         <Ionicons name="chatbox-outline" size={20} color="#8B322C" style={{marginLeft:10}}  />
@@ -182,11 +198,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   technicianTitle: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     paddingHorizontal: 20,
     color: '#8B322C',
-    width:330,
+    width:300,
     height:40,
     marginLeft:10,
     paddingLeft:50,
@@ -215,7 +231,6 @@ const styles = StyleSheet.create({
       height: 2,
     },
   },
- 
   columnHeader: {
     flex: 1,
     color: 'white',
@@ -262,7 +277,9 @@ const styles = StyleSheet.create({
     position:'absolute',
     bottom:10,
     left:20
-
   },
-
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
