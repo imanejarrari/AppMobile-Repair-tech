@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     top: 35,
     right: 1,
     paddingLeft: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'whitesmoke',
     borderRadius: 5,
     padding: 10,
     zIndex: 1,
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 4,
+    
   },
   menuText: {
     fontSize: 16,
