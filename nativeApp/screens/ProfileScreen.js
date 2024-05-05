@@ -1,89 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { db } from '../firebase/firebase';
-import { collection, query, getDocs } from 'firebase/firestore';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { auth } from '../firebase/firebase'; // Import your firebase authentication module
 
 const ProfileScreen = () => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const q = query(collection(db, "users"));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            setCurrentUser(doc.data());
-          });
-        } else {
-          setCurrentUser(null);
-        }
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-        setCurrentUser(null);
+    // Get current user's profile data from authentication
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        const { displayName, email } = user;
+        const [firstName, lastName] = displayName.split(' '); // Assuming the display name is in "First Last" format
+        setUserProfile({ firstName, lastName, email });
+      } else {
+        // No user is signed in.
+        setUserProfile(null);
       }
-    };
+    });
 
-    fetchCurrentUser();
+    // Unsubscribe to avoid memory leaks
+    return unsubscribe;
   }, []);
 
   return (
-    <LinearGradient
-      colors={['#8B322C', '#FFFFFF']}
-      style={styles.container}
-    >
-      <View style={styles.profileContainer}>
-        <View style={styles.header}>
-          <Image
-            source={require('../picture.png')}
-            style={styles.avatar}
-          />
-          <Text style={styles.username}>{currentUser ? currentUser.firstName : 'No Name'}</Text>
-        </View>
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.userInfo}>Email: {currentUser ? currentUser.email : 'No Email'}</Text>
-          {/* Add more user information as needed */}
-        </View>
-      </View>
-    </LinearGradient>
+    <View style={styles.container}>
+      {userProfile ? (
+        <>
+          <Text style={styles.label}>First Name:</Text>
+          <Text style={styles.info}>{userProfile.firstName}</Text>
+
+          <Text style={styles.label}>Last Name:</Text>
+          <Text style={styles.info}>{userProfile.lastName}</Text>
+
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.info}>{userProfile.email}</Text>
+        </>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+    </View>
   );
 };
-
-export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-  profileContainer: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    width: '80%',
     alignItems: 'center',
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  username: {
-    fontSize: 20,
+  label: {
+    fontSize: 18,
     fontWeight: 'bold',
+    marginTop: 10,
   },
-  userInfoContainer: {
-    alignItems: 'flex-start',
-  },
-  userInfo: {
+  info: {
     fontSize: 16,
-    marginBottom: 10,
+    marginTop: 5,
   },
 });
+
+export default ProfileScreen;

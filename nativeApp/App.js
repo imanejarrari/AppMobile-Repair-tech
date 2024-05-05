@@ -12,6 +12,7 @@ import RepairScreen from './screens/RepairScreen';
 import SettingsScreen from './screens/settingsScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import BurgerMenu from './screens/HeaderMenu';
+import { Image } from 'react-native';
 
 
 
@@ -54,6 +55,7 @@ const App = () => {
             headerTitle: () => (
               <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: 'white', fontWeight: 'bold', letterSpacing: 1, fontSize: 15 }}>MEET US!</Text>
+                <Image   source={require('./meeting.png')} style={{position:'absolute' , width:100,height:90,left:70,}}  />
               </View>
             ),
             headerStyle: {

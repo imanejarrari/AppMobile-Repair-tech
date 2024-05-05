@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform ,Image } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const MeetingFormScreen = ({ route }) => {
   const [meetingDate, setMeetingDate] = useState(new Date());
@@ -32,9 +33,10 @@ const MeetingFormScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      
      
       <View style={styles.cont}>
-
+             
       <Text style={styles.label}>Full Name:</Text>
         <TextInput
           style={styles.input}
@@ -116,6 +118,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 5,
     color:'#8B322C',
+    fontWeight:'bold',
+    letterSpacing:0.5
   },
   dateInput: {
     borderWidth: 1,
