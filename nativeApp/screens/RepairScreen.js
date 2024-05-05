@@ -78,49 +78,23 @@ const RepairScreen = ({ navigation }) => {
       <View style={styles.contentContainer}>
          <ScrollView >
           <View style={styles.RepairAnn}>
-            <Text style={{fontWeight:'bold',fontSize:15 ,color:'#8B322C'}}>Tech Repair</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                 <Text style={{ fontSize:11, letterSpacing:0.1 }}>Your Partner For Your Acquisitions Of Computer {'\n'} Equipment, Office Automation, Accessories, {'\n'} Consumables And Stationery.  </Text>
-                    <Ionicons name="construct-outline" size={60} color="black" style={{ marginLeft: 10 }} />
+            <Text style={{fontWeight:'bold',fontSize:25 ,color:'#8B322C' ,paddingLeft:30 , borderBottomWidth:1 , width:220 ,marginLeft:5 ,borderColor:'#8B322C'}}>Tech Repair</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' ,width:250 ,paddingLeft:5}}>
+                 <Text style={{ fontSize:13, letterSpacing:0.1 }}>Your Partner For Your Acquisitions Of Computer Equipment, Office Automation, Accessories, Consumables And Stationery.  </Text>
+                    <Ionicons name="construct-outline" size={70} color="grey" style={{ marginLeft: 2 }} />
            </View>
             
             
            <TouchableOpacity style={styles.button} onPress={goToRepairForm}>
-                <Text style={{fontSize:16,color:'white',fontWeight:'bold',marginTop:5}}>Go to Repair {'>>'}</Text>
+                <Text style={{fontSize:15,color:'black',fontWeight:'bold',marginTop:5}}>Go to Repair {'>>>'}</Text>
               </TouchableOpacity>
 
           </View>
 
-      <View style={styles.repairContainer}>
-        <Text style={styles.repair}>Latest repair</Text>
-        <Text style={styles.repair1}>See All</Text>
-     </View>
+    
+     
     
 
-        <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
-         
-         <View style={styles.cardContainer}>
-         {latestRepair && latestRepair.map(repairs => (
-             <View key={repairs.id} style={styles.request}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-             
-              
-                <Text style={{color:'black' , fontSize:16 , fontWeight:'bold',marginLeft:40}}>{repairs.device}</Text> 
-               
-              </View>
-               
-               <Text style={{marginTop:10,fontSize:12}}>
-                 {repairs.description}
-                 </Text>
-                 <Text style={[styles.status, getStatusStyle(repairs.status)]}>{repairs.status}</Text>
-              
-             </View>
-           ))}
-           
-           
-         </View>
-         
-       </ScrollView>
        <View style={styles.technicianContainer}>
          <Text style={styles.technicianTitle}>Technicians</Text>
          <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer}>
@@ -182,56 +156,10 @@ const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: 'flex-end',
   },
-  repairContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 25,
-    marginBottom:10
-  },
-  repair: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color:'#8B322C'
-  },
-  repair1: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color:'grey'
-  },
 
-  cardContainer: {
-    flexDirection: 'row',
-    paddingRight: 20, 
-    
-  },
-  request: {
-    width: 200,
-    height: 150,
-    marginHorizontal: 10, 
-    borderWidth:0,
-    backgroundColor: 'white ',
-    elevation: 2,
-    shadowColor:'#5BBCFF',
-    shadowOpacity: 1,
-    shadowRadius: 1,
-    borderRadius:1,
-    padding:20
-  },
-  requestTech:{
-    width: 150,
-    height: 150,
-    marginHorizontal: 10, 
-    borderWidth:0,
-    elevation: 2,
-    shadowColor:'#5BBCFF',
-    shadowOpacity: 2,
-    shadowRadius: 1,
-    padding:10,
-    backgroundColor:'whitesmoke',
-    
 
-  },
+
+
   technicianContainer: {    
     marginTop: 20,
   },
@@ -246,7 +174,7 @@ const styles = StyleSheet.create({
     marginLeft:5,
     marginTop:20,
     width: 350,
-    height: 150,
+    height: 200,
     borderWidth:0.10,
     backgroundColor: 'white ',
     elevation: 6,
@@ -265,9 +193,11 @@ const styles = StyleSheet.create({
     width:120,
     height:35,
     paddingLeft:5,
-    borderRadius:10,
-    borderColor:'#8B322C',
-    backgroundColor:'#8B322C',
+    borderRadius:15,
+    borderColor:'#5BBCFF',
+    backgroundColor:'#5BBCFF',
+    marginTop:15,
+    marginLeft:50
   },
   avatar: {
     width: 40,
