@@ -39,28 +39,36 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 , backgroundColor:'whitesmoke'}}>
       {userData ? (
-        <View>
-          <LinearGradient colors={['#8B322C', '#FFFF']} style={Styles.header}>
+        <View  >
+          <LinearGradient colors={['#8B322C', '#FF9999']} style={Styles.header}>
             {userData.profilePicture ? (
               <Image
                 source={{ uri: userData.profilePicture }}
-                style={{ width: 150, height: 150, marginTop: 20 }}
+                style={{ width: 120, height: 150, marginTop: 150 }}
               />
             ) : (
               <Image
                 source={require('../picture.png')}
-                style={{ width: 150, height: 150, marginTop: 20 }}
+                style={{ width: 150, height: 150, marginTop: 150,marginLeft:100 }}
               />
             )}
+            <Text  style={{ fontSize:20,letterSpacing:1
+            }}>  {userData.firstName}</Text>
           </LinearGradient>
-          <Text>Email: {userData.email}</Text>
+
+          <View  style={Styles.contt}>
+            <Text   style={{fontWeight:'bold' , fontSize:20,letterSpacing:1 , marginLeft:80,marginTop:20 }}>USER PROFILE</Text>
+
+            <Text>Email: {userData.email}</Text>
           <Text>First Name: {userData.firstName}</Text>
           <Text>Last Name: {userData.lastName}</Text>
           <TouchableOpacity onPress={handleEditProfile} style={{ marginTop: 20 }}>
             <Text>Edit Profile</Text>
           </TouchableOpacity>
+          </View>
+          
         </View>
       ) : (
         <Text>Loading...</Text>
@@ -74,11 +82,23 @@ export default ProfileScreen;
 const Styles = StyleSheet.create({
   header: {
     position: 'absolute',
-    top: 20,
-    left: 20,
-    right: 20,
+    left: 0,
+    right: 0,
     height: 250,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderBottomLeftRadius:200,
+    borderBottomRightRadius:200
   },
+
+  contt:{
+    position: 'absolute',
+    top: 350,
+    left: 30,
+    right: 30,
+    height: 430,
+    backgroundColor:'white',
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:'white'
+    
+  }
 });
