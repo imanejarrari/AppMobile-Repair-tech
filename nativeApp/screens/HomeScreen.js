@@ -15,7 +15,7 @@ const HomeScreen = ({ navigation, route }) => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        // Your fetch logic to get current user data
+       
       } catch (error) {
         console.error('Error fetching current user:', error);
         setCurrentUserName('No Name');

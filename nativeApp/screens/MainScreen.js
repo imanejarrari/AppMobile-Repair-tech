@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Screens
 import HomeScreen from './HomeScreen';
 import RepairScreen from './RepairScreen';
-import SettingsScreen from './settingsScreen';
+import ProfileScreen from './ProfileScreen';
 import ChatScreen from './ChatScreen';
 
 // Screen names
@@ -51,7 +51,7 @@ const MainScreen = () => {
       />
       <Tab.Screen name={repairName} component={RepairScreen} options={{ headerShown: false }}   />
       <Tab.Screen name={chatName} component={ChatScreen} options={{ headerShown: false }} />
-      <Tab.Screen name={settingsName} component={SettingsScreen} options={{ headerShown: false }} />
+      <Tab.Screen name={settingsName} component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 };

@@ -1,41 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { auth } from '../firebase/firebase'; // Import your firebase authentication module
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Alert ,StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { auth, db } from '../firebase/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const ProfileScreen = () => {
-  const [userProfile, setUserProfile] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Get current user's profile data from authentication
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        const { displayName, email } = user;
-        const [firstName, lastName] = displayName.split(' '); // Assuming the display name is in "First Last" format
-        setUserProfile({ firstName, lastName, email });
-      } else {
-        // No user is signed in.
-        setUserProfile(null);
-      }
-    });
+    const fetchUserData = async () => {
+      try {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const q = query(collection(db, 'users'));
+          const querySnapshot = await getDocs(q);
 
-    // Unsubscribe to avoid memory leaks
-    return unsubscribe;
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
+            setUserData(userData);
+          } else {
+            console.log('User document not found for uid:', currentUser.uid);
+          }
+        } else {
+          console.log('No user is currently authenticated');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
+  const handleEditProfile = () => {
+    navigation.navigate('EditProfileScreen'); 
+  };
+
   return (
-    <View style={styles.container}>
-      {userProfile ? (
-        <>
-          <Text style={styles.label}>First Name:</Text>
-          <Text style={styles.info}>{userProfile.firstName}</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {userData ? (
+        <View>
 
-          <Text style={styles.label}>Last Name:</Text>
-          <Text style={styles.info}>{userProfile.lastName}</Text>
+          <View style={Styles.header}>
 
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.info}>{userProfile.email}</Text>
-        </>
+              {userData.profilePicture ? (
+             
+            <Image
+              source={{ uri: userData.profilePicture }}
+              style={{ width: 150, height: 150, marginTop: 20 }}
+            />
+          ) : (
+            <Image
+              source={require('../picture.png')}
+              style={{ width: 150, height: 150, marginTop: 20 }}
+            />
+          )}
+          </View>
+
+          
+          <Text>Email: {userData.email}</Text>
+          <Text>First Name: {userData.firstName}</Text>
+          <Text>Last Name: {userData.lastName}</Text>
+        
+          <TouchableOpacity onPress={handleEditProfile} style={{ marginTop: 20 }}>
+            <Text>Edit Profile</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <Text>Loading...</Text>
       )}
@@ -43,21 +74,22 @@ const ProfileScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  info: {
-    fontSize: 16,
-    marginTop: 5,
-  },
-});
-
 export default ProfileScreen;
+
+
+const Styles = StyleSheet.create({
+
+ header:{
+  backgroundColor:'red'
+
+ }
+
+
+
+
+
+
+
+
+
+})
