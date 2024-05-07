@@ -50,7 +50,7 @@ const ProfileScreen = () => {
               />
             ) : (
               <Image
-                source={require('../picture.png')}
+                source={require('../userProfile.png')}
                 style={{ width: 150, height: 150, marginTop: 150,marginLeft:100 }}
               />
             )}
