@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, Alert ,StyleSheet } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from '../firebase/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
 
 const ProfileScreen = () => {
   const [userData, setUserData] = useState(null);
@@ -38,31 +39,25 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1 }}>
       {userData ? (
         <View>
-
-          <View style={Styles.header}>
-
-              {userData.profilePicture ? (
-             
-            <Image
-              source={{ uri: userData.profilePicture }}
-              style={{ width: 150, height: 150, marginTop: 20 }}
-            />
-          ) : (
-            <Image
-              source={require('../picture.png')}
-              style={{ width: 150, height: 150, marginTop: 20 }}
-            />
-          )}
-          </View>
-
-          
+          <LinearGradient colors={['#8B322C', '#FFFF']} style={Styles.header}>
+            {userData.profilePicture ? (
+              <Image
+                source={{ uri: userData.profilePicture }}
+                style={{ width: 150, height: 150, marginTop: 20 }}
+              />
+            ) : (
+              <Image
+                source={require('../picture.png')}
+                style={{ width: 150, height: 150, marginTop: 20 }}
+              />
+            )}
+          </LinearGradient>
           <Text>Email: {userData.email}</Text>
           <Text>First Name: {userData.firstName}</Text>
           <Text>Last Name: {userData.lastName}</Text>
-        
           <TouchableOpacity onPress={handleEditProfile} style={{ marginTop: 20 }}>
             <Text>Edit Profile</Text>
           </TouchableOpacity>
@@ -76,20 +71,14 @@ const ProfileScreen = () => {
 
 export default ProfileScreen;
 
-
 const Styles = StyleSheet.create({
-
- header:{
-  backgroundColor:'red'
-
- }
-
-
-
-
-
-
-
-
-
-})
+  header: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    right: 20,
+    height: 250,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
