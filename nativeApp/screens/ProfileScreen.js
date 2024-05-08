@@ -47,12 +47,12 @@ const ProfileScreen = () => {
             {userData.profilePicture ? (
               <Image
                 source={{ uri: userData.profilePicture }}
-                style={{ width: 120, height: 150, marginTop: 150 }}
+                style={{ width: 120, height: 150, marginTop: 150, marginLeft: 140 }}
               />
             ) : (
               <Image
                 source={require('../picture.png')}
-                style={{ width: 140, height: 140, marginTop: 310, marginLeft: 120 }}
+                style={{ width: 140, height: 140, marginTop: 310, marginLeft: 140 }}
               />
             )}
             <Text style={{ fontSize: 20, letterSpacing: 1, top: -200, left: 160, fontWeight: 'bold' }}>{userData.firstName}</Text>
