@@ -185,7 +185,7 @@ const ProfileScreen = () => {
             secureTextEntry={true}
           />
           <TouchableOpacity onPress={saveChanges} style={Styles.saveButton}>
-            <Text style={{ color:'white',paddingLeft: 65, paddingTop: 8 }}>Save Changes</Text>
+            <Text style={{ color:'white',paddingLeft: 50, paddingTop: 2 }}>Save Changes</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -244,7 +244,7 @@ const Styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    backgroundColor: 'rgba(0, 0, 0, 0.7)'
   },
 
   input: {
@@ -262,6 +262,7 @@ const Styles = StyleSheet.create({
     backgroundColor: '#FF9999',
     marginTop: 20,
     padding: 10,
-    borderRadius: 5
+    borderRadius: 50,
+    width:200
   }
 });
