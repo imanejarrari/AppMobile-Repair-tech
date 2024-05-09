@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Modal, StyleSheet, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth, db, storage } from '../firebase/firebase'; // Import Firebase storage if using
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import * as ImagePicker from 'expo-image-picker'; // Import ImagePicker from expo
+import { auth, db } from '../firebase/firebase';
+import { collection, query, where, getDocs, updateDoc, doc, updatePassword } from 'firebase/firestore';
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -15,7 +15,7 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [profilePicture, setProfilePicture] = useState(null); // State to store profile picture URI
+  const [profilePicture, setProfilePicture] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const ProfileScreen = () => {
             setLastName(userData.lastName);
             setEmail(userData.email);
             setPhoneNumber(userData.phoneNumber);
-            setProfilePicture(userData.profilePicture); // Set profile picture
+            setProfilePicture(userData.profilePicture);
           } else {
             console.log('User document not found for uid:', currentUser.uid);
           }
@@ -60,8 +60,13 @@ const ProfileScreen = () => {
         lastName: lastName,
         email: email,
         phoneNumber: phoneNumber,
-        // Update password here if necessary
+        profilePicture: profilePicture,
       });
+
+      if (newPassword.trim() !== '') {
+        await updatePassword(auth.currentUser, newPassword);
+      }
+
       setModalVisible(false);
       fetchUserData();
     } catch (error) {
@@ -84,8 +89,7 @@ const ProfileScreen = () => {
         quality: 1,
       });
 
-      if (!result.cancelled && result.assets.length > 0) {
-        // If the user selected an image, update profile picture state
+      if (!result.canceled && result.assets.length > 0) {
         setProfilePicture(result.assets[0].uri);
       }
     } catch (error) {
@@ -98,20 +102,20 @@ const ProfileScreen = () => {
       {userData ? (
         <View>
           <LinearGradient colors={['#8B322C', '#FF9999']} style={Styles.header}>
-            <TouchableOpacity onPress={selectProfilePicture}> 
+            <TouchableOpacity onPress={selectProfilePicture}>
               {profilePicture ? (
                 <Image
                   source={{ uri: profilePicture }}
-                  style={{width: 140, height: 140, marginTop: 310, marginLeft: 120, borderRadius: 70 }} // Add borderRadius to make it circular
+                  style={{ width: 140, height: 140, marginTop: 310, marginLeft: 130, borderRadius: 70 }}
                 />
               ) : (
                 <Image
                   source={require('../picture.png')}
-                  style={{ width: 140, height: 140, marginTop: 310, marginLeft: 120, borderRadius: 70 }} // Add borderRadius to make it circular
+                  style={{ width: 140, height: 140, marginTop: 310, marginLeft: 130, borderRadius: 70 }}
                 />
               )}
             </TouchableOpacity>
-            <Text style={{ fontSize: 20, letterSpacing: 1, top: -200, left: 160, fontWeight: 'bold' }}>{userData.firstName}</Text>
+            <Text style={{ fontSize: 20, letterSpacing: 1.5, top: -200, left: 160, fontWeight: 'bold' }}>{userData.firstName}</Text>
           </LinearGradient>
 
           <View style={Styles.contt}>
