@@ -12,6 +12,7 @@ import RepairScreen from './screens/RepairScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import BurgerMenu from './screens/HeaderMenu';
 import { Image } from 'react-native';
+import NotificationScreen from './screens/NotificationScreen';
 
 
 
@@ -29,6 +30,7 @@ const App = () => {
         <Stack.Screen name="homeName" component={MainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RepairScreen" component={RepairScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HeaderMenu" component={BurgerMenu} options={{ headerShown: false }} />
+        <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{ headerShown: false }} />
 
         <Stack.Screen
 
