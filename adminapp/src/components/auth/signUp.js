@@ -6,7 +6,11 @@ import { db } from '../firebase/firebase';
 import './Auth.css';
 
 const SignUpForm = ({ setisLoggedIn }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
   const [errors, setErrors] = useState({});
   const [authMode, setAuthMode] = useState('signin'); 
   
@@ -37,7 +41,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
         firstName: '',
         lastName: '',
         email: '',
-        password: '',
+        password: '', // Remove password field from the state update
       });
     } catch (error) {
       console.error('Signup error:', error.message);
@@ -103,7 +107,6 @@ const SignUpForm = ({ setisLoggedIn }) => {
               />
             </div>
           )}
-
           <div className="form-group mt-3">
             <label>Email address</label>
             <input
@@ -129,6 +132,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
             />
             {errors.password && <div className="text-danger">{errors.password}</div>}
           </div>
+
           <div className="d-grid gap-2 mt-3">
             <button
               type="submit"

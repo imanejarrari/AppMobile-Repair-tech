@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../src/components/auth/LoginPage';
-import Sidebar from'./components/sidebar/sidebar';
-import RepairRequests from './components/Repair/RequestList';
+import MainPage from './components/Repair/MainRepair';
 
 
 function App() {
@@ -28,8 +27,7 @@ function App() {
 
             {isLoggedIn && (
               <>
-                     <Route path='/dashboard' element={<Sidebar />} />
-                     <Route path='/repair' element={<RepairRequests />} />
+                     <Route path='/repair' element={<MainPage />} />
 
               </>
             )}

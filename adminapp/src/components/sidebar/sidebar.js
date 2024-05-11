@@ -16,7 +16,7 @@ const Sidebar = () => {
       <CDBSidebar textColor="#fff" backgroundColor="#8B322C">
         <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
           <a href="/" className="text-decoration-none" style={{ color: 'inherit' }}>
-            OpTiStock
+            Repair Tech
           </a>
         </CDBSidebarHeader>
 
