@@ -2,22 +2,14 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import repairLogo from '../assests/repairLogo.png';
 import { collection, addDoc } from 'firebase/firestore';
-import { doCreateUserWithEmailAndPassword } from '../firebase/firebase';
-import { db } from '../firebase/firebase'; // Import db
+import { db } from '../firebase/firebase'; 
 import './Auth.css';
 
 const SignUpForm = ({ setisLoggedIn }) => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    password2: '',
-  });
+  const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [authMode, setAuthMode] = useState('signin'); // Declare authMode
+  const [authMode, setAuthMode] = useState('signin'); 
   
-
   const changeAuthMode = () => {
     setAuthMode((prevMode) => (prevMode === 'signin' ? 'signup' : 'signin'));
   };
@@ -31,19 +23,11 @@ const SignUpForm = ({ setisLoggedIn }) => {
     e.preventDefault();
 
     try {
-      if (formData.password !== formData.password2) {
-        setErrors({ password2: 'Passwords do not match' });
-        return;
-      }
-
-      const user = await doCreateUserWithEmailAndPassword(formData.email, formData.password);
-
-      // Save additional user information to Firestore
-      await addDoc(collection(db, 'users'), {
+      // Add user data directly to Firestore
+      const docRef = await addDoc(collection(db, 'users'), {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
-        uid: user.uid,
       });
 
       toast.success('Congratulations! Your account has been successfully created!');
@@ -54,15 +38,10 @@ const SignUpForm = ({ setisLoggedIn }) => {
         lastName: '',
         email: '',
         password: '',
-        password2: '',
       });
     } catch (error) {
-      console.error('Authentication error:', error.message);
-      if (error.code === 'auth/email-already-in-use') {
-        setErrors({ email: 'Email is already in use' });
-      } else {
-        setErrors({ general: 'An error occurred. Please try again later.' });
-      }
+      console.error('Signup error:', error.message);
+      setErrors({ general: 'An error occurred. Please try again later.' });
     }
   };
 
@@ -103,7 +82,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
               <input
                 type="text"
                 name="firstName"
-                value={formData.firstName}
+                value={formData.firstName || ''}
                 onChange={handleInputChange}
                 className="form-control mt-1"
                 placeholder="e.g Jane"
@@ -117,7 +96,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
               <input
                 type="text"
                 name="lastName"
-                value={formData.lastName}
+                value={formData.lastName || ''}
                 onChange={handleInputChange}
                 className="form-control mt-1"
                 placeholder="e.g Doe"
@@ -130,7 +109,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={formData.email || ''}
               onChange={handleInputChange}
               className="form-control mt-1"
               placeholder="Enter email"
@@ -143,14 +122,13 @@ const SignUpForm = ({ setisLoggedIn }) => {
             <input
               type="password"
               name="password"
-              value={formData.password}
+              value={formData.password || ''}
               onChange={handleInputChange}
               className="form-control mt-1"
               placeholder="Enter password"
             />
             {errors.password && <div className="text-danger">{errors.password}</div>}
           </div>
-
           <div className="d-grid gap-2 mt-3">
             <button
               type="submit"
