@@ -1,0 +1,14 @@
+.sidebar-link li:hover {
+    background-color:#8B322C;
+    color: #fff;
+    cursor: pointer;
+    border: #fff 1px solid;
+  
+  }
+  
+  .labelDesign{
+    border: none; 
+    border-radius: 40px;
+    font-family:sans-serif;
+    word-spacing: 4px;
+  }

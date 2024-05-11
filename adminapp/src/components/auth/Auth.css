@@ -8,7 +8,7 @@
   
   .Auth-form {
     width: 420px;
-    height: 450px;
+    height: 550px;
     box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
     padding-top: 30px;
     padding-bottom: 20px;
@@ -29,7 +29,7 @@
     
   }
   
-  span.link-primary{
+  span.link{
     cursor: pointer;
     color: #8B322C;
     font-weight: 500;
@@ -47,7 +47,7 @@
     font-weight: 800;
   }
   .form-control{
-    width:200px;
+    width:300px;
     height: 30px;
     border-width: 0.1cap;
     border-color:black;
@@ -70,4 +70,8 @@
     margin-top: 20px;
     border-bottom-width:0.1cap;
     border-right-width:0.1cap;
+    cursor: pointer;
+    padding-top: 5px;
+   
+   
   }
