@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { auth , db } from '../firebase/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import repairLogo from '../assests/repairLogo.png';
-import { collection } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
+import { doCreateUserWithEmailAndPassword } from '../firebase/firebase';
+import { db } from '../firebase/firebase'; // Import db
 import './Auth.css';
 
 const SignUpForm = ({ setisLoggedIn }) => {
-  const [authMode, setAuthMode] = useState('signin');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,17 +15,11 @@ const SignUpForm = ({ setisLoggedIn }) => {
     password2: '',
   });
   const [errors, setErrors] = useState({});
+  const [authMode, setAuthMode] = useState('signin'); // Declare authMode
+  
 
   const changeAuthMode = () => {
     setAuthMode((prevMode) => (prevMode === 'signin' ? 'signup' : 'signin'));
-    setErrors({});
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      password2: '',
-    });
   };
 
   const handleInputChange = (e) => {
@@ -42,34 +36,15 @@ const SignUpForm = ({ setisLoggedIn }) => {
         return;
       }
 
-      console.log('Creating user with email:', formData.email); // Log the email being used for user creation
-
-      // Create user with email and password
-      const userCredential = await auth.createUserWithEmailAndPassword(
-        formData.email,
-        formData.password
-      );
-
-      console.log('User created:', userCredential.user); // Log the user object returned after creation
-
-      // Get the current user
-      const user = userCredential.user;
-
-      // Update user profile with first name and last name
-      await user.updateProfile({
-        displayName: `${formData.firstName} ${formData.lastName}`,
-      });
-
-      console.log('User profile updated:', user); // Log the user object after profile update
+      const user = await doCreateUserWithEmailAndPassword(formData.email, formData.password);
 
       // Save additional user information to Firestore
-      await collection(db, 'users').doc(user.uid).set({
+      await addDoc(collection(db, 'users'), {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        uid: user.uid,
       });
-
-      console.log('User information saved to Firestore');
 
       toast.success('Congratulations! Your account has been successfully created!');
       setisLoggedIn(true);
@@ -82,7 +57,7 @@ const SignUpForm = ({ setisLoggedIn }) => {
         password2: '',
       });
     } catch (error) {
-      console.error('Authentication error:', error); // Log the full error object for debugging
+      console.error('Authentication error:', error.message);
       if (error.code === 'auth/email-already-in-use') {
         setErrors({ email: 'Email is already in use' });
       } else {
