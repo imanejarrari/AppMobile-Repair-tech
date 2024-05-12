@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import repairLogo from '../assests/repairLogo.png';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc  } from 'firebase/firestore';
 import { db } from '../firebase/firebase'; 
 import './Auth.css';
 

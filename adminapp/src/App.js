@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../src/components/auth/LoginPage';
 import MainPage from './components/Repair/MainRepair';
+import MainTech from './components/Technicians/TechMain';
 
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
             {isLoggedIn && (
               <>
                      <Route path='/repair' element={<MainPage />} />
-
+                     <Route path='add-technician' element={<MainTech />} />
               </>
             )}
           </Routes>

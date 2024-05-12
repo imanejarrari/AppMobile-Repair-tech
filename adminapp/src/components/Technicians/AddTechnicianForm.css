@@ -1,0 +1,12 @@
+.container-wrapper {
+    display: flex;
+  
+    height: 100vh;
+  }
+  
+  .AddTechnicianForm {
+    width: 100%;
+    margin-left: 50%;
+    margin-top: 10%;
+  }
+  
