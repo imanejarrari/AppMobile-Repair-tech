@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import repairLogo from '../assests/repairLogo.png';
+import {  toast ?ToastContainer } from 'react-toastify';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase'; // Import only the 'db' instance
+import { db } from '../firebase/firebase'; 
 import './AddTechnicianForm.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const AddTechnicianForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -121,7 +122,22 @@ const AddTechnicianForm = ({ onSubmit }) => {
           <button type="submit" className="btn btn-primary mb-3  w-100" style={{backgroundColor:'#8B322C' , borderColor:'#8B322C' ,height:'35px' }}>Add Technician</button>
         </div>
       </form>
+
+      <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+
     </div>
+    
   );
 };
 

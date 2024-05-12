@@ -6,6 +6,8 @@ const  MainTech = () => {
         <div className="main-page">
             <Sidebar />
             <AddTechnicianForm />
+            
+
         </div>
     );
 }
