@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import repairLogo from '../assests/repairLogo.png';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 
@@ -25,7 +24,6 @@ const TechniciansList = () => {
       <div className="technicians-list">
         {technicians.map((technician) => (
           <div key={technician.id} className="technician-card">
-            <img src={repairLogo} alt="Technician" className="technician-avatar" />
             <div className="technician-details">
               <h3>{technician.name}</h3>
               <p>Email: {technician.email}</p>

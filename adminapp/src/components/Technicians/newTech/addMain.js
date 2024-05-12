@@ -1,7 +1,7 @@
 import Sidebar from '../../sidebar/sidebar';
 import AddTechnicianForm from './newTechnician';
 
-const  addMain = () => {       
+const  AddMain = () => {       
     return (
         <div className="main-page">
             <Sidebar />
@@ -12,4 +12,4 @@ const  addMain = () => {
     );
 }
 
-export default addMain; 
+export default AddMain; 
