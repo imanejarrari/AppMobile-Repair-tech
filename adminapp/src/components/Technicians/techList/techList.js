@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import repairLogo from '../assests/repairLogo.png';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import { db } from '../../firebase/firebase';
 
 const TechniciansList = () => {
   const [technicians, setTechnicians] = useState([]);

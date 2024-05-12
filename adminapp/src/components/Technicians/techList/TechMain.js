@@ -1,4 +1,4 @@
-import Sidebar from '../sidebar/sidebar';
+import Sidebar from '../../sidebar/sidebar';
 import TechniciansList from './techList';
 const  MainTech = () => {       
     return (
