@@ -1,11 +1,10 @@
 import Sidebar from '../sidebar/sidebar';
-import AddTechnicianForm from './newTechnician';
-
+import TechniciansList from './techList';
 const  MainTech = () => {       
     return (
         <div className="main-page">
             <Sidebar />
-            <AddTechnicianForm />
+            <TechniciansList />
             
 
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import {  toast ?ToastContainer } from 'react-toastify';
+import {  toast ,ToastContainer } from 'react-toastify';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase'; 
+import { db } from '../../firebase/firebase'; 
 import './AddTechnicianForm.css';
 import 'react-toastify/dist/ReactToastify.css';
 

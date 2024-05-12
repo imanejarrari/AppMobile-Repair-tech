@@ -28,7 +28,7 @@ const Sidebar = () => {
             <NavLink exact to="/technicians" className="sidebar-link">
               <CDBSidebarMenuItem icon='wrench'>Technicians</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/add-technician" className="sidebar-link">
+            <NavLink exact to="/add" className="sidebar-link">
               <CDBSidebarMenuItem icon="user-plus">Add Technician</CDBSidebarMenuItem>
             </NavLink>
             <NavLink exact to="/repair" className="sidebar-link">
