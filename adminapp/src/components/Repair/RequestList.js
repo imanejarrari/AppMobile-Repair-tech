@@ -85,8 +85,10 @@ const RequestList = () => {
       const qrCodeData = {
         clientId: request.clientId,
         clientName: request.clientName,
-        requestInfo: request.requestInfo,
-        totalPrice: request.totalPrice
+        device: request.device,
+        Model: request.Model,
+        RepairType: request.repairType,
+        totalPrice: request.price
       };
       return JSON.stringify(qrCodeData);
     }
