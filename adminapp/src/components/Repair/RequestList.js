@@ -4,6 +4,7 @@ import { db } from '../firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import QRCode from 'qrcode.react'; // Import QRCode component
+import emailjs from 'emailjs-com'; // Import EmailJS library
 import "./MainPage.css";
 
 const RequestList = () => {
@@ -71,6 +72,20 @@ const RequestList = () => {
     try {
       const requestRef = doc(db, 'RepairRequest', selectedRequest.id);
       await updateDoc(requestRef, { price: editedPrice, status: editedStatus });
+
+      // If status is changed to completed and email has not been sent yet
+      if (editedStatus === 'completed' && !selectedRequest.emailSent) {
+        const qrData = generateQRCodeData(selectedRequest);
+        if (qrData) {
+          const qrCodeDataURL = await generateQRCodeDataURL(qrData);
+          sendEmail(selectedRequest.email, qrCodeDataURL);
+          // Mark email as sent
+          await updateDoc(requestRef, { emailSent: true });
+        } else {
+          console.error('Cannot generate QR code for incomplete request');
+        }
+      }
+
       console.log('Request updated successfully:', selectedRequest.id);
       setEditModalVisible(false);
     } catch (error) {
@@ -84,7 +99,7 @@ const RequestList = () => {
       const qrCodeData = {
         clientId: request.clientId,
         clientName: request.clientName,
-        Address:request.address,
+        Address: request.address,
         device: request.device,
         Model: request.Model,
         RepairType: request.repairType,
@@ -93,6 +108,35 @@ const RequestList = () => {
       return JSON.stringify(qrCodeData);
     }
     return null;
+  };
+
+  // Function to generate QR code data URL
+  const generateQRCodeDataURL = async (qrData) => {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(qrData);
+      return qrCodeDataURL;
+    } catch (error) {
+      console.error('Error generating QR code data URL:', error);
+      return null;
+    }
+  };
+
+  // Function to send email
+  const sendEmail = (clientEmail, qrCodeDataURL) => {
+    const serviceID = 'service_a6rqk3l';
+    const templateID = 'template_h0gtw4o';
+    const userID = 'O4uigm09Cr1WLPD2POIdw';
+
+    emailjs.send(serviceID, templateID, {
+      to_email: clientEmail,
+      qr_code_url: qrCodeDataURL
+    }, userID)
+      .then((response) => {
+        console.log('Email sent successfully!', response);
+      })
+      .catch((error) => {
+        console.error('Error sending email:', error);
+      });
   };
 
   return (
