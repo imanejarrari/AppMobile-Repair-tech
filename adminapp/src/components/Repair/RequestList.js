@@ -176,7 +176,6 @@ const RequestList = () => {
               <th>Repair Type</th>
               <th>Description</th>
               <th>Client</th>
-              <th>Email</th>
               <th>Status</th>
               <th>Price</th>
               <th>Action</th>
@@ -191,7 +190,6 @@ const RequestList = () => {
                 <td>{request.repairType}</td>
                 <td>{request.description}</td>
                 <td>{request.clientName}</td>
-                <td>{request.email}</td>
                 <td>
                   <div className="status" style={{ backgroundColor: getStatusColor(request.status) }}>{request.status}</div>
                 </td>
