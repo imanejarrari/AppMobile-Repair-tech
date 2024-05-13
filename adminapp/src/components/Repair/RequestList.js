@@ -85,6 +85,7 @@ const RequestList = () => {
       const qrCodeData = {
         clientId: request.clientId,
         clientName: request.clientName,
+        Address:request.address,
         device: request.device,
         Model: request.Model,
         RepairType: request.repairType,
