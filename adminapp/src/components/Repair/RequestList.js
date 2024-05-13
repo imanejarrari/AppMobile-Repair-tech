@@ -73,7 +73,6 @@ const RequestList = () => {
       await updateDoc(requestRef, { price: editedPrice, status: editedStatus });
       console.log('Request updated successfully:', selectedRequest.id);
       setEditModalVisible(false);
-      // Optionally, update state or fetch repair requests again after updating
     } catch (error) {
       console.error('Error updating request:', error);
     }
@@ -125,7 +124,7 @@ const RequestList = () => {
           >
             <option value="">All</option>
             <option value="pending">Pending</option>
-            <option value="in-progress">In progress</option>
+            <option value="in progress">In progress</option>
             <option value="completed">Completed</option>
           </select>
         </div>
