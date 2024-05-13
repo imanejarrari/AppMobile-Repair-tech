@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
-import './MainPage.css';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import QRCode from 'qrcode.react'; // Import QRCode component
+import "./MainPage.css";
 
 const RequestList = () => {
   const [latestRepair, setLatestRepair] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All'); // Initialize status filter state
+  const [filterStatus, setFilterStatus] = useState('');
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editedPrice, setEditedPrice] = useState('');
+  const [editedStatus, setEditedStatus] = useState('');
 
   useEffect(() => {
     fetchLatestRepair();
@@ -18,27 +23,22 @@ const RequestList = () => {
     try {
       let q = collection(db, 'RepairRequest');
 
-      // Apply search filter
       if (searchQuery) {
-        q = query(q, orderBy('Model'), where('Model', '==', searchQuery));
+        q = query(q, where('Model', '==', searchQuery));
       }
 
-      // Apply status filter
-      if (filterStatus && filterStatus !== 'All') {
-        q = query(q, orderBy('status'), where('status', '==', filterStatus));
+      if (filterStatus) {
+        q = query(q, where('status', '==', filterStatus));
       }
 
       const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const latestRepairData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setLatestRepair(latestRepairData);
-      } else {
-        setLatestRepair([]);
-      }
-      setLoading(false);
+      const repairList = [];
+      querySnapshot.forEach((doc) => {
+        repairList.push({ id: doc.id, ...doc.data() });
+      });
+      setLatestRepair(repairList);
     } catch (error) {
-      console.error('Error fetching latest repair request:', error);
-      setLoading(false);
+      console.error('Error fetching repair requests:', error);
     }
   };
 
@@ -50,21 +50,52 @@ const RequestList = () => {
     setFilterStatus(status);
   };
 
-  const getStatusCellStyle = (status) => {
-    switch (status) {
-      case 'completed':
-        return { backgroundColor: 'greenyellow', color: 'white' };
-      case 'pending':
-        return { backgroundColor: '#FF9999', color: 'white'  ,paddingLeft:'25px'};
-        case 'in progress':
-        return { backgroundColor: '#5BBCFF', color: 'white' };
-      default:
-        return {};
+  const handleEditRequest = (request) => {
+    setSelectedRequest(request);
+    setEditedPrice(request.price || '200dh');
+    setEditedStatus(request.status);
+    setEditModalVisible(true);
+  };
+
+  const handleDeleteRequest = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'RepairRequest', id));
+      console.log('Request deleted successfully:', id);
+      // Optionally, update state or fetch repair requests again after deletion
+    } catch (error) {
+      console.error('Error deleting request:', error);
     }
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const requestRef = doc(db, 'RepairRequest', selectedRequest.id);
+      await updateDoc(requestRef, { price: editedPrice, status: editedStatus });
+      console.log('Request updated successfully:', selectedRequest.id);
+      setEditModalVisible(false);
+      // Optionally, update state or fetch repair requests again after updating
+    } catch (error) {
+      console.error('Error updating request:', error);
+    }
+  };
+
+  // Function to generate QR code data
+  const generateQRCodeData = (request) => {
+    if (request.status === 'completed') {
+      const qrCodeData = {
+        clientId: request.clientId,
+        clientName: request.clientName,
+        requestInfo: request.requestInfo,
+        totalPrice: request.totalPrice
+      };
+      return JSON.stringify(qrCodeData);
+    }
+    return null;
   };
 
   return (
     <div className="container mt-4">
+      {/* Search bar */}
       <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-2 ml-5 " style={{ marginRight: "250px", marginLeft: "250px", height: "30px" }}>
         <div className="input-group">
           <input
@@ -78,23 +109,62 @@ const RequestList = () => {
           />
         </div>
       </div>
+      {/* Filter bar */}
       <div className="d-flex">
-        <div className='p-2 flex-grow-1' style={{marginTop:'80px'}}>
+        <div className='p-2 flex-grow-1' style={{ marginTop: '80px' }}>
           <label htmlFor="statusFilter" className="form-label" >Filter by Status:</label>
           <select
-          style={{width:'400px' , padding:'5px' , borderRadius:'10px' , borderColor:'grey' , marginLeft:'5px'}}
+            style={{ width: '400px', padding: '5px', borderRadius: '10px', borderColor: 'grey', marginLeft: '5px' }}
             id="statusFilter"
             className="status-select"
             value={filterStatus}
             onChange={(e) => handleStatusFilter(e.target.value)}
           >
-            <option value="All">All</option>
+            <option value="">All</option>
             <option value="pending">Pending</option>
             <option value="in-progress">In progress</option>
             <option value="completed">Completed</option>
           </select>
         </div>
       </div>
+      
+      {/* Edit modal */}
+      {editModalVisible && (
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit Request</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{marginLeft:'300px'}} onClick={() => setEditModalVisible(false)}>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  <div className="form-group">
+                    <label htmlFor="editedPrice">Price</label>
+                    <input type="text" className="form-control" id="editedPrice" value={editedPrice} onChange={(e) => setEditedPrice(e.target.value)} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="editedStatus">Status</label>
+                    <select className="form-control" id="editedStatus" value={editedStatus} onChange={(e) => setEditedStatus(e.target.value)}>
+                      <option value="pending">Pending</option>
+                      <option value="in progress">In progress</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" style={{backgroundColor:'grey', width:'200px', paddingTop:'2px'}} onClick={() => setEditModalVisible(false)}>Close</button>
+                <button type="button" className="btn btn-primary" style={{backgroundColor:'#8B322C', borderColor:'#8B322C', width:'200px', marginRight:'30px', paddingTop:'2px'}} onClick={handleSaveChanges}>Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Repair request list */}
       <div style={{ maxHeight: "350px", overflowY: "auto" }}>
         <table className='table table-hover shadow p-1 mb-4 bg-body rounded' style={{ fontSize: "14px" }}>
           <thead>
@@ -106,7 +176,9 @@ const RequestList = () => {
               <th>Client</th>
               <th>Email</th>
               <th>Status</th>
+              <th>Price</th>
               <th>Action</th>
+              <th>QR Code</th> {/* New column for QR code */}
             </tr>
           </thead>
           <tbody>
@@ -118,10 +190,19 @@ const RequestList = () => {
                 <td>{request.description}</td>
                 <td>{request.clientName}</td>
                 <td>{request.email}</td>
-                <td> 
-                 <div style={getStatusCellStyle(request.status)} className='stt'>{request.status}</div>
+                <td>
+                  <div className="status" style={{ backgroundColor: getStatusColor(request.status) }}>{request.status}</div>
                 </td>
-                <td>anyway</td>
+                <td>{request.price || '200dh'}</td>
+                <td>
+                  <FontAwesomeIcon icon={faEdit} style={{ color: 'blue', cursor: 'pointer' }} onClick={() => handleEditRequest(request)} />
+                  <FontAwesomeIcon icon={faTrash} style={{ color: '#8B322C', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleDeleteRequest(request.id)} />
+                </td>
+                <td>
+                  {request.status === 'completed' && ( // Render QR code if request is completed
+                    <QRCode value={generateQRCodeData(request)} />
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -129,6 +210,19 @@ const RequestList = () => {
       </div>
     </div>
   );
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'completed':
+      return 'greenyellow';
+    case 'pending':
+      return '#FF9999';
+    case 'in progress':
+      return '#5BBCFF';
+    default:
+      return '';
+  }
 };
 
 export default RequestList;

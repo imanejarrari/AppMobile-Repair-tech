@@ -75,11 +75,7 @@ const TechniciansList = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'Availability') {
-      setEditedTechnician({ ...editedTechnician, [name]: value === 'true' });
-    } else {
-      setEditedTechnician({ ...editedTechnician, [name]: value });
-    }
+    setEditedTechnician({ ...editedTechnician, [name]: name === 'Availability' ? value === 'true' : value });
   };
   
   const handleSaveChanges = async () => {
@@ -102,7 +98,7 @@ const TechniciansList = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Edit Technician</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => setEditModalVisible(false)}>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{marginLeft:'300px'}} onClick={() => setEditModalVisible(false)}>
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -127,23 +123,21 @@ const TechniciansList = () => {
                   <div className="form-group">
                     <label htmlFor="technicianAvailability">Availability</label>
                     <select className="form-control" id="technicianAvailability" name="Availability" value={editedTechnician.Availability.toString()} onChange={handleInputChange}>
-                              <option value="true">Available</option>
-                               <option value="false">Not Available</option>
+                      <option value='true'>Available</option>
+                      <option value='false'>Not Available</option>
                     </select>
-
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary"style={{backgroundColor:'grey'}} onClick={() => setEditModalVisible(false)}>Close</button>
-                <button type="button" className="btn btn-primary" style={{backgroundColor:'#8B322C' , borderColor:'#8B322C'}} onClick={handleSaveChanges}>Save changes</button>
+                <button type="button" className="btn btn-secondary"style={{backgroundColor:'grey' , width:'200px' ,paddingTop:'2px'}} onClick={() => setEditModalVisible(false)}>Close</button>
+                <button type="button" className="btn btn-primary" style={{backgroundColor:'#8B322C' , borderColor:'#8B322C', width:'200px' ,marginRight:'30px' , paddingTop:'2px'}} onClick={handleSaveChanges}>Save changes</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-     
       <div className="technicians-list-container">
         <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-2 ml-5 " style={{ marginRight: "250px", marginLeft: "250px", height: "30px" }}>
           <div className="input-group">
@@ -185,20 +179,20 @@ const TechniciansList = () => {
               </tr>
             </thead>
             <tbody>
-  {technicians.map((technician) => (
-    <tr key={technician.id} style={{ backgroundColor: technician.Availability ? 'transparent' : '#FF9999' }}>
-      <td>{technician.Name}</td>
-      <td>{technician.email}</td>
-      <td>{technician.phoneNumber}</td>
-      <td>{technician.Specialization}</td>
-      <td>{technician.Availability ? 'Available' : 'Not Available'}</td>
-      <td>
-        <FontAwesomeIcon icon={faEdit} style={{ color: 'blue' }} className="edit-icon" onClick={() => handleEdit(technician.id)} />
-        <FontAwesomeIcon icon={faTrash} style={{ color: 'red', marginLeft: '15px' }} className="delete-icon" onClick={() => handleDelete(technician.id)} />
-      </td>
-    </tr>
-  ))}
-</tbody>
+              {technicians.map((technician) => (
+                <tr key={technician.id} style={{ backgroundColor: technician.Availability ? 'transparent' : '#FF9999' }}>
+                  <td>{technician.Name}</td>
+                  <td>{technician.email}</td>
+                  <td>{technician.phoneNumber}</td>
+                  <td>{technician.Specialization}</td>
+                  <td>{technician.Availability ? 'Available' : 'Not Available'}</td>
+                  <td>
+                    <FontAwesomeIcon icon={faEdit} style={{ color: 'blue' }} className="edit-icon" onClick={() => handleEdit(technician.id)} />
+                    <FontAwesomeIcon icon={faTrash} style={{ color: 'red', marginLeft: '15px' }} className="delete-icon" onClick={() => handleDelete(technician.id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
