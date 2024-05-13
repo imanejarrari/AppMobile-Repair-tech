@@ -13,7 +13,7 @@ const RepairScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchTechnicians = async () => {
       try {
-        const q = query(collection(db, "Technicians"));
+        const q = query(collection(db, "technicians"));
         const querySnapshot = await getDocs(q);
         const technicianData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
