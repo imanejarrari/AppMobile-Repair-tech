@@ -3,8 +3,7 @@ import { collection, getDocs, query, where, deleteDoc, doc, updateDoc } from 'fi
 import { db } from '../firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import QRCode from 'qrcode.react'; // Import QRCode component
-import emailjs from 'emailjs-com'; // Import EmailJS library
+import QRCode from 'qrcode.react';
 import "./MainPage.css";
 
 const RequestList = () => {
@@ -62,7 +61,6 @@ const RequestList = () => {
     try {
       await deleteDoc(doc(db, 'RepairRequest', id));
       console.log('Request deleted successfully:', id);
-      // Optionally, update state or fetch repair requests again after deletion
     } catch (error) {
       console.error('Error deleting request:', error);
     }
@@ -72,19 +70,6 @@ const RequestList = () => {
     try {
       const requestRef = doc(db, 'RepairRequest', selectedRequest.id);
       await updateDoc(requestRef, { price: editedPrice, status: editedStatus });
-
-      // If status is changed to completed and email has not been sent yet
-      if (editedStatus === 'completed' && !selectedRequest.emailSent) {
-        const qrData = generateQRCodeData(selectedRequest);
-        if (qrData) {
-          const qrCodeDataURL = await generateQRCodeDataURL(qrData);
-          sendEmail(selectedRequest.email, qrCodeDataURL);
-          // Mark email as sent
-          await updateDoc(requestRef, { emailSent: true });
-        } else {
-          console.error('Cannot generate QR code for incomplete request');
-        }
-      }
 
       console.log('Request updated successfully:', selectedRequest.id);
       setEditModalVisible(false);
@@ -96,47 +81,37 @@ const RequestList = () => {
   // Function to generate QR code data
   const generateQRCodeData = (request) => {
     if (request.status === 'completed') {
-      const qrCodeData = {
-        clientId: request.clientId,
-        clientName: request.clientName,
-        Address: request.address,
-        device: request.device,
-        Model: request.Model,
-        RepairType: request.repairType,
-        totalPrice: request.price
-      };
-      return JSON.stringify(qrCodeData);
+      const qrCodeData = [
+        'Best Info Tech',
+        `Client Name: ${request.clientName}`,
+        `Email: ${request.email}`,
+        `Address: ${request.address}`,
+        `Device: ${request.device}`,
+        `Model: ${request.Model}`,
+        `Repair Type: ${request.repairType}`,
+        `Total Price: ${request.price}`
+      ];
+      return qrCodeData.join('\n'); // Separate each piece of information with a new line
     }
     return null;
   };
 
-  // Function to generate QR code data URL
-  const generateQRCodeDataURL = async (qrData) => {
-    try {
-      const qrCodeDataURL = await QRCode.toDataURL(qrData);
-      return qrCodeDataURL;
-    } catch (error) {
-      console.error('Error generating QR code data URL:', error);
-      return null;
+  // Function to render QR code
+  const renderQRCode = (request) => {
+    const qrData = generateQRCodeData(request);
+    if (qrData) {
+      return (
+        <QRCode
+          value={qrData}
+          style={{
+            border: '2px solid #000',
+            borderRadius: '10px',
+            // Add any other inline styles as needed
+          }}
+        />
+      );
     }
-  };
-
-  // Function to send email
-  const sendEmail = (clientEmail, qrCodeDataURL) => {
-    const serviceID = 'service_a6rqk3l';
-    const templateID = 'template_h0gtw4o';
-    const userID = 'O4uigm09Cr1WLPD2POIdw';
-
-    emailjs.send(serviceID, templateID, {
-      to_email: clientEmail,
-      qr_code_url: qrCodeDataURL
-    }, userID)
-      .then((response) => {
-        console.log('Email sent successfully!', response);
-      })
-      .catch((error) => {
-        console.error('Error sending email:', error);
-      });
+    return null;
   };
 
   return (
@@ -223,7 +198,7 @@ const RequestList = () => {
               <th>Status</th>
               <th>Price</th>
               <th>Action</th>
-              <th>QR Code</th> {/* New column for QR code */}
+              <th>QR Code</th>
             </tr>
           </thead>
           <tbody>
@@ -243,9 +218,7 @@ const RequestList = () => {
                   <FontAwesomeIcon icon={faTrash} style={{ color: '#8B322C', marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleDeleteRequest(request.id)} />
                 </td>
                 <td>
-                  {request.status === 'completed' && ( // Render QR code if request is completed
-                    <QRCode value={generateQRCodeData(request)} />
-                  )}
+                  {request.status === 'completed' && renderQRCode(request)}
                 </td>
               </tr>
             ))}
