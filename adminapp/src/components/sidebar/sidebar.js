@@ -22,8 +22,8 @@ const Sidebar = () => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink exact to="/dashboard" className="sidebar-link">
-              <CDBSidebarMenuItem icon='chart-line'>Dashboard</CDBSidebarMenuItem>
+             <NavLink exact to="/repair" className="sidebar-link">
+              <CDBSidebarMenuItem icon="tools">Repair</CDBSidebarMenuItem>
             </NavLink>
             <NavLink exact to="/technicians" className="sidebar-link">
               <CDBSidebarMenuItem icon='wrench'>Technicians</CDBSidebarMenuItem>
@@ -31,14 +31,16 @@ const Sidebar = () => {
             <NavLink exact to="/add" className="sidebar-link">
               <CDBSidebarMenuItem icon="user-plus">Add Technician</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/repair" className="sidebar-link">
-              <CDBSidebarMenuItem icon="tools">Repair</CDBSidebarMenuItem>
+            <NavLink exact to="/meeting" className="sidebar-link">
+              <CDBSidebarMenuItem icon="calendar-alt">Meeting</CDBSidebarMenuItem>
             </NavLink>
+           
             <NavLink exact to="/users" className="sidebar-link">
-              <CDBSidebarMenuItem icon="users">Users</CDBSidebarMenuItem>
+              <CDBSidebarMenuItem icon="users">Clients</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/message" className="sidebar-link">
-              <CDBSidebarMenuItem icon="envelope">Messages</CDBSidebarMenuItem>
+           
+            <NavLink exact to="/logout" className="sidebar-link">
+              <CDBSidebarMenuItem icon="sign-out-alt">Logout</CDBSidebarMenuItem>
             </NavLink>
           </CDBSidebarMenu>
         </CDBSidebarContent>

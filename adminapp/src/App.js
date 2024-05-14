@@ -4,6 +4,7 @@ import LoginPage from '../src/components/auth/LoginPage';
 import MainPage from './components/Repair/MainRepair';
 import MainTech from './components/Technicians/techList/TechMain';
 import AddMain from './components/Technicians/newTech/addMain';
+import MainMeet from './components/meeting/MainMeet';
 
 function App() {
   const [isLoggedIn, setisLoggedIn] = useState(false);
@@ -31,6 +32,8 @@ function App() {
                      <Route path='/repair' element={<MainPage />} />
                      <Route path='/technicians' element={<MainTech />} />
                      <Route path='/add' element={<AddMain />} />
+                     <Route path='/meeting' element={<MainMeet />} />
+
                      
               </>
             )}

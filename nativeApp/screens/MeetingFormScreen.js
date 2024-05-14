@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform ,Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform ,Image, Alert } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -12,6 +12,7 @@ const MeetingFormScreen = ({ route }) => {
   const [reason, setReason] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [status, setStatus] = useState('Pending'); // Default status
 
   const { technicianId } = route.params;
 
@@ -23,9 +24,17 @@ const MeetingFormScreen = ({ route }) => {
         meetingTime,
         fullName,
         reason,
-        status: 'Available',
+        status, // Include status in the document
       });
-      // Optionally, you can navigate back to the previous screen or perform any other action upon successful submission
+      // Show confirmation message
+      Alert.alert(
+        'Meeting Request Sent',
+        'Your meeting request has been sent successfully.',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') }
+        ],
+        { cancelable: false }
+      );
     } catch (error) {
       console.error('Error sending meeting request:', error);
     }
@@ -33,11 +42,8 @@ const MeetingFormScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      
-     
       <View style={styles.cont}>
-             
-      <Text style={styles.label}>Full Name:</Text>
+        <Text style={styles.label}>Full Name:</Text>
         <TextInput
           style={styles.input}
           value={fullName}
@@ -91,8 +97,6 @@ const MeetingFormScreen = ({ route }) => {
             }}
           />
         )}
-
-      
 
         <TouchableOpacity style={styles.button} onPress={sendMeetingRequest}>
           <Text style={styles.buttonText}>Send Meeting Request</Text>
