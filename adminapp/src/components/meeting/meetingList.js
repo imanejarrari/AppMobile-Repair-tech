@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+
 const MeetingRequestsList = () => {
   const [meetingRequests, setMeetingRequests] = useState([]);
 
@@ -12,9 +13,22 @@ const MeetingRequestsList = () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'MeetingRequests'));
       const meetingRequestsList = [];
-      querySnapshot.forEach((doc) => {
-        meetingRequestsList.push({ id: doc.id, ...doc.data() });
-      });
+      for (const doc of querySnapshot.docs) {
+        const meetingRequestData = doc.data();
+        // Fetch technician's name based on technicianId
+        const technicianDoc = await getDoc(doc(db, 'technicians', meetingRequestData.technicianId));
+        const technicianData = technicianDoc.data();
+        const meetingRequestWithTechnicianName = {
+          id: doc.id,
+          fullName: meetingRequestData.fullName,
+          reason: meetingRequestData.reason,
+          meetingDate: meetingRequestData.meetingDate,
+          meetingTime: meetingRequestData.meetingTime,
+          status: meetingRequestData.status,
+          technicianName: technicianData ? technicianData.Name : 'Unknown Technician'
+        };
+        meetingRequestsList.push(meetingRequestWithTechnicianName);
+      }
       setMeetingRequests(meetingRequestsList);
     } catch (error) {
       console.error('Error fetching meeting requests:', error);
@@ -34,6 +48,7 @@ const MeetingRequestsList = () => {
                 <th>Date</th>
                 <th>Time</th>
                 <th>Status</th>
+                <th>Technician Name</th>
               </tr>
             </thead>
             <tbody>
@@ -44,6 +59,7 @@ const MeetingRequestsList = () => {
                   <td>{meetingRequest.meetingDate}</td>
                   <td>{meetingRequest.meetingTime}</td>
                   <td>{meetingRequest.status}</td>
+                  <td>{meetingRequest.technicianName}</td>
                 </tr>
               ))}
             </tbody>
