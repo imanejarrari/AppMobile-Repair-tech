@@ -13,13 +13,13 @@ const MeetingRequestsList = () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'MeetingRequests'));
       const meetingRequestsList = [];
-      for (const doc of querySnapshot.docs) {
-        const meetingRequestData = doc.data();
+      for (const docSnapshot of querySnapshot.docs) {
+        const meetingRequestData = docSnapshot.data();
         // Fetch technician's name based on technicianId
         const technicianDoc = await getDoc(doc(db, 'technicians', meetingRequestData.technicianId));
         const technicianData = technicianDoc.data();
         const meetingRequestWithTechnicianName = {
-          id: doc.id,
+          id: docSnapshot.id,
           fullName: meetingRequestData.fullName,
           reason: meetingRequestData.reason,
           meetingDate: meetingRequestData.meetingDate,
@@ -47,8 +47,9 @@ const MeetingRequestsList = () => {
                 <th>Reason</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>Status</th>
                 <th>Technician Name</th>
+                <th>Status</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -58,8 +59,9 @@ const MeetingRequestsList = () => {
                   <td>{meetingRequest.reason}</td>
                   <td>{meetingRequest.meetingDate}</td>
                   <td>{meetingRequest.meetingTime}</td>
-                  <td>{meetingRequest.status}</td>
                   <td>{meetingRequest.technicianName}</td>
+                  <td>{meetingRequest.status}</td>
+                  
                 </tr>
               ))}
             </tbody>
