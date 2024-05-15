@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput,Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BurgerMenu from './HeaderMenu';
 import { query, collection, getDocs, orderBy, where } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
+import { signOut, getAuth } from 'firebase/auth'; 
+import NotificationScreen from './NotificationScreen';
 
 const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
   const [latestRepair, setLatestRepair] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [notificationCount, setNotificationCount] = useState(0); 
+  const auth = getAuth(); 
+  const [showBoxList, setShowBoxList] = useState(false); 
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -42,8 +46,21 @@ const HomeScreen = ({ navigation, route }) => {
         if (!querySnapshot.empty) {
           const latestRepairData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           setLatestRepair(latestRepairData);
+          
+          // Calculate notification count
+          const repairRequestsSnapshot = await getDocs(collection(db, 'RepairRequest'));
+          const repairData = repairRequestsSnapshot.docs.map(doc => doc.data());
+          const filteredRepairRequests = repairData.filter(request => request.status === 'completed');
+
+          const meetingRequestsSnapshot = await getDocs(collection(db, 'MeetingRequests'));
+          const meetingData = meetingRequestsSnapshot.docs.map(doc => doc.data());
+          const filteredMeetingRequests = meetingData.filter(request => request.status === 'accepted');
+          
+          const totalNotificationCount = filteredRepairRequests.length + filteredMeetingRequests.length;
+          setNotificationCount(totalNotificationCount);
         } else {
           setLatestRepair(null);
+          setNotificationCount(0);
         }
       } catch (error) {
         console.error('Error fetching latest repair request:', error);
@@ -56,8 +73,16 @@ const HomeScreen = ({ navigation, route }) => {
   const handleSearch = (text) => {
     setSearchQuery(text);
   };
+  
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);  
+      navigation.navigate('login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
-  // Status colors and icons
   const getStatusStyle = (status) => {
     switch (status) {
       case 'completed':
@@ -77,22 +102,74 @@ const HomeScreen = ({ navigation, route }) => {
     'in progress': { name: 'hourglass-outline', color: '#007AFF' },
   };
 
+ // const toggleBoxList = () => {
+   // setShowBoxList(!showBoxList);
+  //};
+  const handleShowNotifications = async () => {
+    try {
+      // Fetch repair requests
+      const repairRequestsSnapshot = await getDocs(collection(db, 'RepairRequest'));
+      const repairData = repairRequestsSnapshot.docs.map(doc => doc.data());
+      const filteredRepairRequests = repairData.filter(request => request.status === 'completed');
+  
+      // Fetch meeting requests
+      const meetingRequestsSnapshot = await getDocs(collection(db, 'MeetingRequests'));
+      const meetingData = meetingRequestsSnapshot.docs.map(doc => doc.data());
+      const filteredMeetingRequests = meetingData.filter(request => request.status === 'accepted');
+  
+      // Display notifications
+      let notifications = '';
+      filteredRepairRequests.forEach(request => {
+        notifications += `Your repair request for ${request.device} is completed.\n`;
+      });
+  
+      filteredMeetingRequests.forEach(request => {
+        const dateTime = `${request.date} ${request.time}`; // Assuming date and time fields are available in meeting request data
+        notifications += `You have a meeting at ${dateTime}.\n`;
+      });
+  
+      // Show notifications
+      if (notifications !== '') {
+        Alert.alert('Notifications', notifications);
+      } else {
+        Alert.alert('Notifications', 'No new notifications.');
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleShowNotifications}>
           <View style={styles.headerLeft}>
             <Ionicons
+            style={{cursor: 'pointer' }}
               name={'notifications-outline'}
               size={30}
               color={'white'}
             />
+            {notificationCount > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationCount}>{notificationCount}</Text>
+              </View>
+            )}
           </View>
         </TouchableOpacity>
         <View style={styles.headerRight}>
-          <BurgerMenu navigation={navigation} />
+        <TouchableOpacity onPress={handleLogout}>
+            <Ionicons
+              name={'log-out-outline'} 
+              size={30}
+              color={'white'}
+            />
+        </TouchableOpacity>
+      
         </View>
       </View>
+     {/*{showBoxList && <NotificationScreen onLogOut={handleLogout} />}*/} 
 
       <View style={styles.search}>
         <TextInput
@@ -120,7 +197,7 @@ const HomeScreen = ({ navigation, route }) => {
             <View key={repairs.id} style={styles.request}>
               <Ionicons name={statusIcons[repairs.status].name} size={40} marginLeft={120} color={statusIcons[repairs.status].color} />
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', marginLeft: 90, marginTop: 1, letterSpacing: 1 }}>{repairs.device}</Text>
+                <Text style={{ color: 'black', fontSize: 20, fontWeight: 'bold', marginLeft: 55, marginTop: 1, letterSpacing: 1 }}>{repairs.device}</Text>
               </View>
               <Text style={{ marginTop: 10, fontSize: 13, fontWeight: 300, marginLeft: 10 }}>
                 {repairs.description}
@@ -197,6 +274,20 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+  },
+  notificationBadge: {
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    position:'absolute',
+    left:20,
+    top:-2
+  
+  },
+  notificationCount: {
+    color: 'white',
+    fontSize: 10,
+    
   },
 });
 

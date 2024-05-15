@@ -46,7 +46,7 @@ const App = () => {
             ),
             headerStyle: {
               backgroundColor: '#8B322C',
-              height: 100, // Adjust height as needed
+              height: 100, 
             },
             headerTitleAlign: 'center',
             headerTintColor: 'white',
@@ -64,7 +64,7 @@ const App = () => {
             ),
             headerStyle: {
               backgroundColor: '#8B322C',
-              height: 100, // Adjust height as needed
+              height: 100, 
             },
             headerTitleAlign: 'center',
             headerTintColor: 'white',
