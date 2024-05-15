@@ -6,49 +6,50 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import QRCode from 'qrcode.react';
 import "./MainPage.css";
 
-const RequestList = () => {
-  const [latestRepair, setLatestRepair] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editedPrice, setEditedPrice] = useState('');
-  const [editedStatus, setEditedStatus] = useState('');
 
-  useEffect(() => {
-    fetchLatestRepair();
-  }, [searchQuery, filterStatus]);
 
-  const fetchLatestRepair = async () => {
-    try {
-      let q = collection(db, 'RepairRequest');
 
-      if (searchQuery) {
-        q = query(q, where('Model', '==', searchQuery));
+  const RequestList = () => {
+    const [latestRepair, setLatestRepair] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [editedPrice, setEditedPrice] = useState('');
+    const [editedStatus, setEditedStatus] = useState('');
+  
+    useEffect(() => {
+      fetchLatestRepair();
+    }, []);
+  
+    const fetchLatestRepair = async () => {
+      try {
+        let q = collection(db, 'RepairRequest');
+  
+       
+  
+        if (filterStatus) {
+          q = query(q, where('status', '==', filterStatus));
+        }
+  
+        const querySnapshot = await getDocs(q);
+        const repairList = [];
+        querySnapshot.forEach((doc) => {
+          repairList.push({ id: doc.id, ...doc.data() });
+        });
+        setLatestRepair(repairList);
+      } catch (error) {
+        console.error('Error fetching repair requests:', error);
       }
-
-      if (filterStatus) {
-        q = query(q, where('status', '==', filterStatus));
-      }
-
-      const querySnapshot = await getDocs(q);
-      const repairList = [];
-      querySnapshot.forEach((doc) => {
-        repairList.push({ id: doc.id, ...doc.data() });
-      });
-      setLatestRepair(repairList);
-    } catch (error) {
-      console.error('Error fetching repair requests:', error);
-    }
-  };
-
-  const handleSearch = (text) => {
-    setSearchQuery(text);
-  };
-
-  const handleStatusFilter = (status) => {
-    setFilterStatus(status);
-  };
+    };
+  
+    const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value);
+    };
+  
+    const handleStatusFilter = (status) => {
+      setFilterStatus(status);
+    };
 
   const handleEditRequest = (request) => {
     setSelectedRequest(request);
@@ -78,7 +79,6 @@ const RequestList = () => {
     }
   };
 
-  // Function to generate QR code data
   const generateQRCodeData = (request) => {
     if (request.status === 'completed') {
       const qrCodeData = [
@@ -91,12 +91,11 @@ const RequestList = () => {
         `Repair Type: ${request.repairType}`,
         `Total Price: ${request.price}`
       ];
-      return qrCodeData.join('\n'); // Separate each piece of information with a new line
+      return qrCodeData.join('\n');
     }
     return null;
   };
 
-  // Function to render QR code
   const renderQRCode = (request) => {
     const qrData = generateQRCodeData(request);
     if (qrData) {
@@ -106,7 +105,6 @@ const RequestList = () => {
           style={{
             border: '2px solid #000',
             borderRadius: '10px',
-            // Add any other inline styles as needed
           }}
         />
       );
@@ -119,14 +117,14 @@ const RequestList = () => {
       {/* Search bar */}
       <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-2 ml-5 " style={{ marginRight: "250px", marginLeft: "250px", height: "30px" }}>
         <div className="input-group">
-          <input
+        <input
             type="search"
             placeholder="Search by Model"
             aria-describedby="button-addon1"
             className="form-control border-0  bg-light"
             style={{ paddingLeft: 200, width: "300px" }}
             value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
@@ -148,7 +146,7 @@ const RequestList = () => {
           </select>
         </div>
       </div>
-      
+
       {/* Edit modal */}
       {editModalVisible && (
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
@@ -156,7 +154,7 @@ const RequestList = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Edit Request</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{marginLeft:'300px'}} onClick={() => setEditModalVisible(false)}>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{ marginLeft: '300px' }} onClick={() => setEditModalVisible(false)}>
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -177,8 +175,8 @@ const RequestList = () => {
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" style={{backgroundColor:'grey', width:'200px', paddingTop:'2px'}} onClick={() => setEditModalVisible(false)}>Close</button>
-                <button type="button" className="btn btn-primary" style={{backgroundColor:'#8B322C', borderColor:'#8B322C', width:'200px', marginRight:'30px', paddingTop:'2px'}} onClick={handleSaveChanges}>Save changes</button>
+                <button type="button" className="btn btn-secondary" style={{ backgroundColor: 'grey', width: '200px', paddingTop: '2px' }} onClick={() => setEditModalVisible(false)}>Close</button>
+                <button type="button" className="btn btn-primary" style={{ backgroundColor: '#8B322C', borderColor: '#8B322C', width: '200px', marginRight: '30px', paddingTop: '2px' }} onClick={handleSaveChanges}>Save changes</button>
               </div>
             </div>
           </div>
