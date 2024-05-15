@@ -6,50 +6,54 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import QRCode from 'qrcode.react';
 import "./MainPage.css";
 
+const RequestList = () => {
+  const [latestRepair, setLatestRepair] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editedPrice, setEditedPrice] = useState('');
+  const [editedStatus, setEditedStatus] = useState('');
 
+  useEffect(() => {
+    fetchLatestRepair();
+  }, []);
 
+  const fetchLatestRepair = async () => {
+    try {
+      let q = collection(db, 'RepairRequest');
 
-  const RequestList = () => {
-    const [latestRepair, setLatestRepair] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filterStatus, setFilterStatus] = useState('');
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [editModalVisible, setEditModalVisible] = useState(false);
-    const [editedPrice, setEditedPrice] = useState('');
-    const [editedStatus, setEditedStatus] = useState('');
-  
-    useEffect(() => {
-      fetchLatestRepair();
-    }, []);
-  
-    const fetchLatestRepair = async () => {
-      try {
-        let q = collection(db, 'RepairRequest');
-  
-       
-  
-        if (filterStatus) {
-          q = query(q, where('status', '==', filterStatus));
-        }
-  
-        const querySnapshot = await getDocs(q);
-        const repairList = [];
-        querySnapshot.forEach((doc) => {
-          repairList.push({ id: doc.id, ...doc.data() });
-        });
-        setLatestRepair(repairList);
-      } catch (error) {
-        console.error('Error fetching repair requests:', error);
+      // Apply status filter if selected
+      if (filterStatus) {
+        q = query(q, where('status', '==', filterStatus));
       }
-    };
-  
-    const handleSearchChange = (event) => {
-      setSearchQuery(event.target.value);
-    };
-  
-    const handleStatusFilter = (status) => {
-      setFilterStatus(status);
-    };
+
+      // Apply search filter if searchQuery is not empty
+      if (searchQuery) {
+        // Convert searchQuery to lowercase for case-insensitive search
+        const searchTerm = searchQuery.toLowerCase();
+        // Add a where clause to filter by the Model property
+        q = query(q, where('Model', '>=', searchTerm), where('Model', '<=', searchTerm + '\uf8ff'));
+      }
+
+      const querySnapshot = await getDocs(q);
+      const repairList = [];
+      querySnapshot.forEach((doc) => {
+        repairList.push({ id: doc.id, ...doc.data() });
+      });
+      setLatestRepair(repairList);
+    } catch (error) {
+      console.error('Error fetching repair requests:', error);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleStatusFilter = (status) => {
+    setFilterStatus(status);
+  };
 
   const handleEditRequest = (request) => {
     setSelectedRequest(request);
