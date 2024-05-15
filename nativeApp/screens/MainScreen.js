@@ -6,13 +6,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './HomeScreen';
 import RepairScreen from './RepairScreen';
 import ProfileScreen from './ProfileScreen';
-import ChatScreen from './ChatScreen';
+import MeetingScreen from './MeetingScreen'; 
 
 // Screen names
 const homeName = 'Home';
 const repairName = 'Repair';
 const settingsName = 'Me';
-const chatName = 'Chat'; // Changed to camelCase for consistency
+const meetingName = 'Meeting'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -30,8 +30,8 @@ const MainScreen = () => {
             iconName = focused ? 'build' : 'build-outline';
           } else if (route.name === settingsName) {
             iconName = focused ? 'person' : 'person-outline';
-          } else if (route.name === chatName) { // Corrected variable name
-            iconName = focused ? 'chatbubble' : 'chatbubble-ellipses-outline';
+          } else if (route.name === meetingName) { // Corrected variable name
+            iconName = focused ? 'videocam' : 'videocam-outline'; // Assuming 'videocam' icon represents a meeting
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -50,7 +50,7 @@ const MainScreen = () => {
         }}
       />
       <Tab.Screen name={repairName} component={RepairScreen} options={{ headerShown: false }}   />
-      <Tab.Screen name={chatName} component={ChatScreen} options={{ headerShown: false }} />
+      <Tab.Screen name={meetingName} component={MeetingScreen} options={{ headerShown: false }} />
       <Tab.Screen name={settingsName} component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

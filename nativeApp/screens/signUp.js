@@ -37,6 +37,7 @@ const SignUp = ({ navigation }) => {
    
     <View style={styles.container}
     >
+     
       <View  style={styles.header} >
       <Image
         source={require('../saruu.png')}

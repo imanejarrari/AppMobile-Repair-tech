@@ -98,11 +98,9 @@ const RepairScreen = ({ navigation }) => {
                     <Text style={styles.column}>{technician.Name}</Text>
                     <Text style={styles.column2}>{technician.Specialization}</Text>
                     <View style={styles.actions}>
-                      <TouchableOpacity onPress={() => handleSendMessage(technician.id)}>
-                        <Ionicons name="chatbox-outline" size={20} color="#8B322C" style={{marginLeft:10}}  />
-                      </TouchableOpacity>
+                     
                       <TouchableOpacity onPress={() => handleScheduleMeeting(technician.id)}>
-                        <Ionicons name="calendar-outline" size={20} color="#8B322C" style={{marginLeft:10}} />
+                        <Ionicons name="calendar-outline" size={20} color="#8B322C" style={{marginLeft:15}} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -229,8 +227,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: 'black',
     borderRadius: 5,
-    padding: 5,
+    padding: 10,
     margin: 10,
+    marginLeft:15,
     backgroundColor: 'white',
     elevation: 5,
     shadowColor: 'black',

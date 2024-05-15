@@ -32,6 +32,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+       <View style={styles.header}></View>
       <Text style={styles.title}> Welcome Back! </Text>
       <TextInput
         style={styles.input}
@@ -74,16 +75,26 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor:'#fff'
+  },
+  header:{
+    backgroundColor: '#8B322C',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    height: 180,
+    width:400,
+    marginBottom: 120,
+    borderBottomLeftRadius:250,
+    borderBottomRightRadius:250
+
   },
   title: {
     fontSize: 25,
     marginBottom: 20,
     right: 5,
     color: 'black',
-    bottom: 90,
+    bottom: 50,
   },
   input: {
     width: '80%',

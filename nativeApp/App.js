@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RepairForm from './screens/RepairForm';
 import MeetingFormScreen from './screens/MeetingFormScreen';
-import ChatScreen from './screens/ChatScreen';
 import { View ,Text} from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import RepairScreen from './screens/RepairScreen';
@@ -13,6 +12,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import BurgerMenu from './screens/HeaderMenu';
 import { Image } from 'react-native';
 import NotificationScreen from './screens/NotificationScreen';
+import MeetingScreen from './screens/MeetingScreen';
 
 
 
@@ -31,6 +31,8 @@ const App = () => {
         <Stack.Screen name="RepairScreen" component={RepairScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HeaderMenu" component={BurgerMenu} options={{ headerShown: false }} />
         <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="meetingName" component={MeetingScreen} options={{ headerShown: false }} />
+
 
         <Stack.Screen
 
@@ -68,7 +70,6 @@ const App = () => {
             headerTintColor: 'white',
           }} 
         />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -13,6 +13,7 @@ const RepairForm = ({ navigation }) => {
   const [device, setDevice] = useState('');
   const [repairType, setRepairType] = useState('');
   const [description, setDescription] = useState('');
+  const [model, setModel] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSubmit = async () => {
@@ -24,6 +25,7 @@ const RepairForm = ({ navigation }) => {
           address,
           device,
           repairType,
+          model,
           description,
           status: 'pending'
         });
@@ -83,6 +85,15 @@ const RepairForm = ({ navigation }) => {
             placeholder="Device"
             value={device}
             onChangeText={setDevice}
+          />
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="hardware-chip-outline" size={24} color="grey" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Model"
+            value={model}
+            onChangeText={setModel}
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -149,7 +160,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     marginBottom: 10,
-    marginTop: 10,
     backgroundColor: 'white',
     width: 270
   },
@@ -157,10 +167,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B322C',
     padding: 15,
     alignItems: 'center',
-    width: 200, 
+    width: 100, 
     marginBottom: 20,
     marginTop: 10,
-    marginLeft: 70,
+    marginLeft: 110,
     borderRadius:50
   },
 
