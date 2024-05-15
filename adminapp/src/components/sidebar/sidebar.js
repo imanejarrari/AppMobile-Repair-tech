@@ -1,15 +1,20 @@
-import React from 'react';
+import React  , { useState } from 'react';
 import {
   CDBSidebar,
   CDBSidebarContent,
   CDBSidebarHeader,
   CDBSidebarMenu,
   CDBSidebarMenuItem,
+  CDBSidebarFooter
 } from 'cdbreact';
 import { NavLink } from 'react-router-dom';
 import "./Sidebar.css";
+import ImageAvatars from "./ImageAvatars"
+
 
 const Sidebar = () => {
+  const [avatreDiv, setAvatareDiv] = useState(true);
+
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial' }}>
@@ -35,15 +40,15 @@ const Sidebar = () => {
               <CDBSidebarMenuItem icon="calendar-alt">Meeting</CDBSidebarMenuItem>
             </NavLink>
            
-            <NavLink exact to="/users" className="sidebar-link">
-              <CDBSidebarMenuItem icon="users">Clients</CDBSidebarMenuItem>
-            </NavLink>
            
-            <NavLink exact to="/logout" className="sidebar-link">
-              <CDBSidebarMenuItem icon="sign-out-alt">Logout</CDBSidebarMenuItem>
-            </NavLink>
+            
           </CDBSidebarMenu>
         </CDBSidebarContent>
+        <CDBSidebarFooter>
+          <div className='mx-auto mb-2' style={{ width: avatreDiv ? "40px": "200px" ,transition: 'width 0.5s',}} onClick={handlAvatreDiv => {setAvatareDiv(!avatreDiv)}}>
+            <ImageAvatars />
+          </div>
+        </CDBSidebarFooter>
 
         
       </CDBSidebar>
