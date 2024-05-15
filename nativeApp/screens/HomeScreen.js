@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput,Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text, TextInput, Modal, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { query, collection, getDocs, orderBy, where } from "firebase/firestore";
+import { query, collection, getDoc, orderBy, where,getDocs,doc } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
 import { signOut, getAuth } from 'firebase/auth'; 
-import NotificationScreen from './NotificationScreen';
+import NotificationModal from './NotificationModal';
 
 const HomeScreen = ({ navigation, route }) => {
   const [currentUserName, setCurrentUserName] = useState('No Name');
@@ -14,7 +14,8 @@ const HomeScreen = ({ navigation, route }) => {
   const [filterStatus, setFilterStatus] = useState('');
   const [notificationCount, setNotificationCount] = useState(0); 
   const auth = getAuth(); 
-  const [showBoxList, setShowBoxList] = useState(false); 
+  const [showNotificationModal, setShowNotificationModal] = useState(false); 
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -102,9 +103,6 @@ const HomeScreen = ({ navigation, route }) => {
     'in progress': { name: 'hourglass-outline', color: '#007AFF' },
   };
 
- // const toggleBoxList = () => {
-   // setShowBoxList(!showBoxList);
-  //};
   const handleShowNotifications = async () => {
     try {
       // Fetch repair requests
@@ -118,27 +116,36 @@ const HomeScreen = ({ navigation, route }) => {
       const filteredMeetingRequests = meetingData.filter(request => request.status === 'accepted');
   
       // Display notifications
-      let notifications = '';
+      let notifications = [];
       filteredRepairRequests.forEach(request => {
-        notifications += `Your repair request for ${request.device} is completed.\n`;
+        notifications.push(`Your repair request for ${request.device} is completed. Check it!`);
       });
   
-      filteredMeetingRequests.forEach(request => {
-        const dateTime = `${request.date} ${request.time}`; // Assuming date and time fields are available in meeting request data
-        notifications += `You have a meeting at ${dateTime}.\n`;
-      });
+      // Fetch technician names for meeting requests
+      for (const meetingRequest of filteredMeetingRequests) {
+        const technicianId = meetingRequest.technicianId;
+      
+        const technicianDoc = await getDoc(doc(db, 'technicians', technicianId));
+        if (technicianDoc.exists()) {
+          const technicianData = technicianDoc.data();
+          const technicianName = technicianData.Name;
+          const dateTime = `${meetingRequest.meetingDate} ${meetingRequest.meetingTime}`;
+          notifications.push(`You have a meeting with ${technicianName} at ${dateTime}.`);
+        }
+      }
   
       // Show notifications
-      if (notifications !== '') {
-        Alert.alert('Notifications', notifications);
-      } else {
-        Alert.alert('Notifications', 'No new notifications.');
-      }
+      setNotifications(notifications);
+      setShowNotificationModal(true);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   };
   
+
+  const handleCloseNotificationModal = () => {
+    setShowNotificationModal(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -146,7 +153,7 @@ const HomeScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={handleShowNotifications}>
           <View style={styles.headerLeft}>
             <Ionicons
-            style={{cursor: 'pointer' }}
+              style={{cursor: 'pointer' }}
               name={'notifications-outline'}
               size={30}
               color={'white'}
@@ -159,17 +166,15 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         <View style={styles.headerRight}>
-        <TouchableOpacity onPress={handleLogout}>
+          <TouchableOpacity onPress={handleLogout}>
             <Ionicons
               name={'log-out-outline'} 
               size={30}
               color={'white'}
             />
-        </TouchableOpacity>
-      
+          </TouchableOpacity>
         </View>
       </View>
-     {/*{showBoxList && <NotificationScreen onLogOut={handleLogout} />}*/} 
 
       <View style={styles.search}>
         <TextInput
@@ -207,6 +212,12 @@ const HomeScreen = ({ navigation, route }) => {
           ))}
         </View>
       </ScrollView>
+
+      <NotificationModal
+        visible={showNotificationModal}
+        notifications={notifications}
+        onClose={handleCloseNotificationModal}
+      />
     </View>
   );
 };
@@ -287,7 +298,6 @@ const styles = StyleSheet.create({
   notificationCount: {
     color: 'white',
     fontSize: 10,
-    
   },
 });
 
