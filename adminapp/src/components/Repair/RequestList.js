@@ -23,12 +23,10 @@ const RequestList = () => {
     try {
       let q = collection(db, 'RepairRequest');
 
-      // Apply status filter if selected
       if (filterStatus) {
         q = query(q, where('status', '==', filterStatus));
       }
 
-      // Apply search filter if searchQuery is not empty
       if (searchQuery) {
         // Convert searchQuery to lowercase for case-insensitive search
         const searchTerm = searchQuery.toLowerCase();
