@@ -177,9 +177,9 @@ const HomeScreen = ({ navigation, route }) => {
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <TouchableOpacity onPress={() => setShowQRModal(false)} style={styles.closeButton}>
-                  <Ionicons name="close-circle" size={30} color="#8B322C" />
-                  <Text style={{marginBottom:50}}>your QR code </Text>
+                  <Ionicons name="close-circle" size={25} color="black"  />
                 </TouchableOpacity>
+                <Text style={{marginLeft:50,fontWeight:'bold' , letterSpacing:1}}>Your Qr Code </Text>
                 <View style={styles.qrCodeContainer}>
                   <QRCode value={qrCodeData} size={200} style={{marginTop:50}} />
                 </View>
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: 'absolute',
     top: 10,
-    right: 10,
+    left:200
   },
   qrCodeContainer: {
     alignItems: 'center',
