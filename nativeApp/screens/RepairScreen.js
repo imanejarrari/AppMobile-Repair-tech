@@ -34,18 +34,28 @@ const RepairScreen = ({ navigation }) => {
     fetchTechnicians();
   }, [filter]); // Run useEffect when filter changes
 
-  const handleSendMessage = (technicianId) => {
-    navigation.navigate('ChatScreen', { technicianId });
-  };
+
 
   const handleScheduleMeeting = (technicianId) => {
     navigation.navigate('MeetingFormScreen', { technicianId });
   };
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);  
+      navigation.navigate('login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.head}>Repair & Recovery </Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Ionicons name="log-out-outline" size={30} color="white" />
+        </TouchableOpacity>
       </View>
       <View style={styles.contentContainer}>
         <ScrollView>
@@ -126,6 +136,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     height: 100,
+  },
+  logoutButton:{
+    left:305,
+    top:-30
   },
   head: {
     color: 'white',
