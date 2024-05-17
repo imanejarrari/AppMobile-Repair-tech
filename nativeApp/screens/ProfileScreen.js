@@ -18,33 +18,33 @@ const ProfileScreen = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          const q = query(collection(db, 'users'));
-          const querySnapshot = await getDocs(q);
+  const fetchUserData = async () => {
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const q = query(collection(db, 'users'), where('email', '==', currentUser.email));
+        const querySnapshot = await getDocs(q);
 
-          if (!querySnapshot.empty) {
-            const userData = querySnapshot.docs[0].data();
-            setUserData(userData);
-            setFirstName(userData.firstName);
-            setLastName(userData.lastName);
-            setEmail(userData.email);
-            setPhoneNumber(userData.phoneNumber);
-            setProfilePicture(userData.profilePicture);
-          } else {
-            console.log('User document not found for uid:', currentUser.uid);
-          }
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+          setFirstName(userData.firstName);
+          setLastName(userData.lastName);
+          setEmail(userData.email);
+          setPhoneNumber(userData.phoneNumber);
+          setProfilePicture(userData.profilePicture);
         } else {
-          console.log('No user is currently authenticated');
+          console.log('User document not found for uid:', currentUser.uid);
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+      } else {
+        console.log('No user is currently authenticated');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -55,24 +55,30 @@ const ProfileScreen = () => {
   const saveChanges = async () => {
     try {
       const userRef = doc(db, 'users', userData.uid);
-      await updateDoc(userRef, {
+      const userDataToUpdate = {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        phoneNumber: phoneNumber,
-        profilePicture: profilePicture,
-      });
-
+        
+      };
+  
+      if (profilePicture !== null && profilePicture !== undefined) {
+        userDataToUpdate.profilePicture = profilePicture;
+      }
+  
+      await updateDoc(userRef, userDataToUpdate);
+  
       if (newPassword.trim() !== '') {
         await updatePassword(auth.currentUser, newPassword);
       }
-
+  
       setModalVisible(false);
       fetchUserData();
     } catch (error) {
       console.error('Error updating user data:', error);
     }
   };
+  
 
   const selectProfilePicture = async () => {
     try {
@@ -91,6 +97,7 @@ const ProfileScreen = () => {
 
       if (!result.canceled && result.assets.length > 0) {
         setProfilePicture(result.assets[0].uri);
+        // Add code to upload the image to your storage and save the URL to Firestore if necessary
       }
     } catch (error) {
       console.error('Error selecting profile picture:', error);
@@ -136,7 +143,7 @@ const ProfileScreen = () => {
               <Text style={Styles.userInfoText}>{userData.phoneNumber}</Text>
             </View>
             <TouchableOpacity onPress={handleEditProfile} style={Styles.editProfileButton}>
-              <Text style={{ color:'white',paddingLeft: 65, paddingTop: 8 }}>Edit Profile</Text>
+              <Text style={{ color: 'white', paddingLeft: 65, paddingTop: 8 }}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -185,7 +192,7 @@ const ProfileScreen = () => {
             secureTextEntry={true}
           />
           <TouchableOpacity onPress={saveChanges} style={Styles.saveButton}>
-            <Text style={{ color:'white',paddingLeft: 50, paddingTop: 2 }}>Save Changes</Text>
+            <Text style={{ color: 'white', paddingLeft: 50, paddingTop: 2 }}>Save Changes</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -203,7 +210,7 @@ const Styles = StyleSheet.create({
     height: 400,
     top: -170,
     width: 400,
-    borderRadius: 200
+    borderRadius: 200,
   },
 
   contt: {
@@ -222,11 +229,11 @@ const Styles = StyleSheet.create({
     borderColor: 'grey',
     letterSpacing: 1,
     paddingLeft: 40,
-    paddingTop: 30
+    paddingTop: 30,
   },
 
   userInfoText: {
-    marginLeft: 50
+    marginLeft: 50,
   },
 
   editProfileButton: {
@@ -244,7 +251,7 @@ const Styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)'
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
 
   input: {
@@ -255,7 +262,7 @@ const Styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 5
+    borderRadius: 5,
   },
 
   saveButton: {
@@ -263,6 +270,6 @@ const Styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
     borderRadius: 50,
-    width:200
-  }
+    width: 200,
+  },
 });
