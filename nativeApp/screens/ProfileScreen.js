@@ -32,7 +32,6 @@ const ProfileScreen = () => {
           setLastName(userData.lastName);
           setEmail(userData.email);
           setPhoneNumber(userData.phoneNumber);
-          setProfilePicture(userData.profilePicture);
         } else {
           console.log('User document not found for uid:', currentUser.uid);
         }
@@ -55,30 +54,36 @@ const ProfileScreen = () => {
   const saveChanges = async () => {
     try {
       const userRef = doc(db, 'users', userData.uid);
-      const userDataToUpdate = {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        
-      };
-  
-      if (profilePicture !== null && profilePicture !== undefined) {
-        userDataToUpdate.profilePicture = profilePicture;
+      const userDataToUpdate = {};
+
+      if (firstName.trim() !== '') {
+        userDataToUpdate.firstName = firstName;
       }
-  
+
+      if (lastName.trim() !== '') {
+        userDataToUpdate.lastName = lastName;
+      }
+
+      if (email.trim() !== '') {
+        userDataToUpdate.email = email;
+      }
+
+      if (phoneNumber.trim() !== '') {
+        userDataToUpdate.phoneNumber = phoneNumber;
+      }
+
       await updateDoc(userRef, userDataToUpdate);
-  
+
       if (newPassword.trim() !== '') {
         await updatePassword(auth.currentUser, newPassword);
       }
-  
+
       setModalVisible(false);
       fetchUserData();
     } catch (error) {
       console.error('Error updating user data:', error);
     }
   };
-  
 
   const selectProfilePicture = async () => {
     try {
@@ -95,9 +100,8 @@ const ProfileScreen = () => {
         quality: 1,
       });
 
-      if (!result.canceled && result.assets.length > 0) {
+      if (!result.cancelled && result.assets.length > 0) {
         setProfilePicture(result.assets[0].uri);
-        // Add code to upload the image to your storage and save the URL to Firestore if necessary
       }
     } catch (error) {
       console.error('Error selecting profile picture:', error);
