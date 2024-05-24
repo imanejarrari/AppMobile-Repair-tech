@@ -17,7 +17,7 @@ const RequestList = () => {
 
   useEffect(() => {
     fetchLatestRepair();
-  }, []);
+  }, [filterStatus, searchQuery]);
 
   const fetchLatestRepair = async () => {
     try {
@@ -28,17 +28,12 @@ const RequestList = () => {
       }
 
       if (searchQuery) {
-        // Convert searchQuery to lowercase for case-insensitive search
         const searchTerm = searchQuery.toLowerCase();
-        // Add a where clause to filter by the Model property
         q = query(q, where('Model', '>=', searchTerm), where('Model', '<=', searchTerm + '\uf8ff'));
       }
 
       const querySnapshot = await getDocs(q);
-      const repairList = [];
-      querySnapshot.forEach((doc) => {
-        repairList.push({ id: doc.id, ...doc.data() });
-      });
+      const repairList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setLatestRepair(repairList);
     } catch (error) {
       console.error('Error fetching repair requests:', error);
@@ -49,8 +44,8 @@ const RequestList = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleStatusFilter = (status) => {
-    setFilterStatus(status);
+  const handleStatusFilter = (event) => {
+    setFilterStatus(event.target.value);
   };
 
   const handleEditRequest = (request) => {
@@ -63,6 +58,7 @@ const RequestList = () => {
   const handleDeleteRequest = async (id) => {
     try {
       await deleteDoc(doc(db, 'RepairRequest', id));
+      fetchLatestRepair();
       console.log('Request deleted successfully:', id);
     } catch (error) {
       console.error('Error deleting request:', error);
@@ -73,7 +69,7 @@ const RequestList = () => {
     try {
       const requestRef = doc(db, 'RepairRequest', selectedRequest.id);
       await updateDoc(requestRef, { price: editedPrice, status: editedStatus });
-
+      fetchLatestRepair();
       console.log('Request updated successfully:', selectedRequest.id);
       setEditModalVisible(false);
     } catch (error) {
@@ -119,7 +115,7 @@ const RequestList = () => {
       {/* Search bar */}
       <div className="p-1 bg-light rounded rounded-pill shadow-sm mb-2 ml-5 " style={{ marginRight: "250px", marginLeft: "250px", height: "30px" }}>
         <div className="input-group">
-        <input
+          <input
             type="search"
             placeholder="Search by Model"
             aria-describedby="button-addon1"
@@ -139,7 +135,7 @@ const RequestList = () => {
             id="statusFilter"
             className="status-select"
             value={filterStatus}
-            onChange={(e) => handleStatusFilter(e.target.value)}
+            onChange={handleStatusFilter}
           >
             <option value="">All</option>
             <option value="pending">Pending</option>
